@@ -3,4 +3,8 @@ object Constants {
     object Delay {
         const val SPLASH_TIME_DELAY = 3000L
     }
+
+    object Api{
+        const val BASE_URL = ""
+    }
 }
