@@ -4,15 +4,17 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.os.bundleOf
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.mapinspector.R
+import kotlinx.android.synthetic.main.fragment_dialog.*
 
 class BottomDialogFragment : BottomSheetDialogFragment() {
 
     companion object {
-        fun create() = BottomDialogFragment().apply {
-            arguments = bundleOf("key" to "value")
+        fun newInstance(coordinates: String) = BottomDialogFragment().apply {
+            arguments = Bundle().apply {
+                putString("coordinates", coordinates)
+            }
         }
     }
 
@@ -21,5 +23,19 @@ class BottomDialogFragment : BottomSheetDialogFragment() {
         savedInstanceState: Bundle?
     ): View? {
         return inflater.inflate(R.layout.fragment_dialog, container, false)
+    }
+
+    override fun onViewCreated(
+        view: View,
+        savedInstanceState: Bundle?
+    ) {
+        val text by lazy { arguments?.getString("coordinates") }
+        tv_object_cord.text = text
+        setOnClickListeners()
+    }
+
+    private fun setOnClickListeners() {
+        btn_apply.setOnClickListener {
+        }
     }
 }

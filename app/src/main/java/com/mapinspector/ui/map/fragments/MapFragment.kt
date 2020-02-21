@@ -9,6 +9,7 @@ import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.mapinspector.R
+import com.mapinspector.ui.map.fragments.BottomDialogFragment.Companion.newInstance
 
 
 class MapFragment : Fragment() {
@@ -35,7 +36,7 @@ class MapFragment : Fragment() {
         allPoints.add(it)
         googleMap.clear()
         googleMap.addMarker(MarkerOptions().position(it))
-        BottomDialogFragment().show(childFragmentManager, null)
+        newInstance(it.toString()).show(childFragmentManager, null)
     }
 
     private fun initMap(){
