@@ -8,6 +8,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.mapinspector.R
 import kotlinx.android.synthetic.main.fragment_dialog.*
 
+
 class BottomDialogFragment : BottomSheetDialogFragment() {
 
     companion object {
@@ -29,13 +30,16 @@ class BottomDialogFragment : BottomSheetDialogFragment() {
         view: View,
         savedInstanceState: Bundle?
     ) {
-        val text by lazy { arguments?.getString("coordinates") }
-        tv_object_cord.text = text
+        val coordinates by lazy { arguments?.getString("coordinates") }
+        tv_object_cord.text = coordinates
         setOnClickListeners()
     }
 
     private fun setOnClickListeners() {
         btn_apply.setOnClickListener {
+        }
+        btn_back.setOnClickListener {
+            dismiss()
         }
     }
 }
