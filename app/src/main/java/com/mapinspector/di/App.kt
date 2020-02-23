@@ -1,13 +1,15 @@
-package com.mapinspector
+package com.mapinspector.di
 
 import android.app.Application
-import com.mapinspector.di.AppComponent
-import com.mapinspector.di.DaggerAppComponent
+import com.mapinspector.di.network.ViewModelModule
 import com.mapinspector.di.network.NetworkModule
 
 class App: Application() {
 
-    lateinit var appComponent: AppComponent
+    companion object{
+        lateinit var appComponent: AppComponent
+    }
+
 
     override fun onCreate() {
         super.onCreate()
@@ -17,6 +19,7 @@ class App: Application() {
     private fun initializeDagger() {
         appComponent = with(DaggerAppComponent.builder()) {
             networkModule(NetworkModule)
+            viewModelModule(ViewModelModule)
         }.build()
     }
 }

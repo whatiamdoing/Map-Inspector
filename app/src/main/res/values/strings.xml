@@ -6,4 +6,5 @@
     <string name="enter_name">Введите название</string>
     <string name="apply">Apply</string>
     <string name="coordinates">coordinates</string>
+    <string name="latLng">lat/lng: %1$s</string>
 </resources>
