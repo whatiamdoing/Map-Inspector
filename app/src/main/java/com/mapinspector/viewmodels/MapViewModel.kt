@@ -1,4 +1,4 @@
-package com.mapinspector.ui.map.viewmodels
+package com.mapinspector.viewmodels
 
 import androidx.lifecycle.ViewModel
 

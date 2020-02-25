@@ -1,5 +1,6 @@
-package com.mapinspector.di.network
+package com.mapinspector.di.module
 
+import com.mapinspector.di.network.ApiService
 import com.mapinspector.utils.Constants.Api.BASE_URL
 import dagger.Module
 import dagger.Provides

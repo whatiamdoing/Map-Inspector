@@ -1,8 +1,8 @@
 package com.mapinspector.ui.map
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
+import androidx.appcompat.app.AppCompatActivity
 import com.mapinspector.R
 import com.mapinspector.ui.map.fragments.MapFragment
 import com.mapinspector.utils.Constants

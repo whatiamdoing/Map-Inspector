@@ -1,7 +1,7 @@
-package com.mapinspector.di.network
+package com.mapinspector.di.module
 
-import com.mapinspector.ui.map.viewmodels.BottomDialogViewModel
-import com.mapinspector.ui.map.viewmodels.MapViewModel
+import com.mapinspector.viewmodels.BottomDialogViewModel
+import com.mapinspector.viewmodels.MapViewModel
 import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton

@@ -9,11 +9,10 @@ import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.mapinspector.R
+import com.mapinspector.di.App
 import com.mapinspector.ui.map.fragments.BottomDialogFragment.Companion.newInstance
-import com.mapinspector.utils.getIsFirstLaunch
-import com.mapinspector.utils.setFirstLaunch
-import com.mapinspector.utils.setUserId
 import java.util.*
+import javax.inject.Inject
 
 
 class MapFragment : Fragment() {
@@ -33,7 +32,6 @@ class MapFragment : Fragment() {
         view: View,
         savedInstanceState: Bundle?
     ) {
-        initUser()
         initMap()
     }
 
@@ -41,7 +39,7 @@ class MapFragment : Fragment() {
         allPoints.add(it)
         googleMap.clear()
         googleMap.addMarker(MarkerOptions().position(it))
-        newInstance(it.toString()).show(childFragmentManager, null)
+        newInstance(it).show(childFragmentManager, null)
     }
 
     private fun initMap(){
@@ -59,14 +57,6 @@ class MapFragment : Fragment() {
         }
         googleMap.setOnMapLongClickListener {
             showBottomDialog(it)
-        }
-    }
-
-    private fun initUser(){
-        if (getIsFirstLaunch(activity!!)){
-            val userId = UUID.randomUUID().toString()
-            setUserId(activity!!, userId)
-            setFirstLaunch(activity!!, false)
         }
     }
 }
