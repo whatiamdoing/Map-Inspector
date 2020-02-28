@@ -14,5 +14,6 @@ object Constants {
         const val PREF_KEY_USER = "user_places"
         const val PREF_KEY_USER_ID = "user_id"
         const val PREF_KEY_LAUNCH = "first_launch"
+        const val PREF_KEY_PERMISSION = "permission_granted"
     }
 }

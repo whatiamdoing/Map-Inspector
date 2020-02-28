@@ -1,10 +1,10 @@
-package com.mapinspector.viewmodels
+package com.mapinspector.viewmodel
 
 import androidx.lifecycle.ViewModel
 import com.mapinspector.di.App
 import com.mapinspector.di.network.ApiService
-import com.mapinspector.entity.Coordinates
-import com.mapinspector.entity.Place
+import com.mapinspector.model.Coordinates
+import com.mapinspector.model.Place
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
@@ -18,7 +18,6 @@ class BottomDialogViewModel: ViewModel() {
     init {
         App.appComponent.inject(this)
     }
-
     private val subscriptions = CompositeDisposable()
 
     fun createPlace(id: String, placeName: String, placeCoordinates: Coordinates, placeId: String){
@@ -26,12 +25,9 @@ class BottomDialogViewModel: ViewModel() {
             apiService.createPlace(id, placeId, Place(placeName, placeCoordinates))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({},{})
+                .doOnSubscribe {}
+                .doOnTerminate {}
+                .subscribe()
         )
-    }
-
-    override fun onCleared() {
-        super.onCleared()
-        subscriptions.dispose()
     }
 }

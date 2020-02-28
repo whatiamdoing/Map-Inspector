@@ -10,9 +10,9 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.mapinspector.utils.SharedPreferences
 import com.mapinspector.di.App
 import com.mapinspector.R
-import com.mapinspector.entity.Coordinates
-import com.mapinspector.entity.LocationModel
-import com.mapinspector.viewmodels.BottomDialogViewModel
+import com.mapinspector.model.Coordinates
+import com.mapinspector.model.LocationModel
+import com.mapinspector.viewmodel.BottomDialogViewModel
 import kotlinx.android.synthetic.main.fragment_dialog.*
 import java.util.*
 import javax.inject.Inject
