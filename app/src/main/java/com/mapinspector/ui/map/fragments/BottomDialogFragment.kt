@@ -47,7 +47,7 @@ class BottomDialogFragment : BottomSheetDialogFragment() {
         dialogViewModel = ViewModelProviders.of(this).get(BottomDialogViewModel::class.java)
         tv_object_cord.text = getString(
             R.string.latLng,
-            coordinates.latLng.latitude.toString(),
+            coordinates.latLng.latitude.toString(), 
             coordinates.latLng.longitude.toString()
         )
         setOnClickListeners()
