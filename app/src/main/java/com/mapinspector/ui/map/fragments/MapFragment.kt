@@ -109,8 +109,7 @@ class MapFragment : Fragment() {
     }
 
     private fun showGpsAlert() {
-        val alertDialog = AlertDialog.Builder(activity)
-        alertDialog.run {
+            AlertDialog.Builder(activity).run {
             setCancelable(false)
             setTitle(getString(R.string.enable_geoData))
             setMessage(getString(R.string.pls_enable_geoData))
