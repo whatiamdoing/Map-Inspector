@@ -6,5 +6,5 @@ fun View.setVisible(){
     visibility = View.VISIBLE
 }
 fun View.setGone(){
-    visibility = View.VISIBLE
+    visibility = View.GONE
 }

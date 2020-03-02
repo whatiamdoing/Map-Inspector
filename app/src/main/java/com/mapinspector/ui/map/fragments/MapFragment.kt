@@ -67,14 +67,12 @@ class MapFragment : Fragment() {
         mapFragment.getMapAsync {
             googleMap = it
             setOnMapClickListeners()
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 if (isPermissionsGranted()) {
                     googleMap.isMyLocationEnabled = true
                 } else {
                     googleMap.isMyLocationEnabled = false
                     showPermissionAlert()
                 }
-            }
         }
     }
 
@@ -109,7 +107,7 @@ class MapFragment : Fragment() {
     }
 
     private fun showGpsAlert() {
-            AlertDialog.Builder(activity).run {
+            AlertDialog.Builder(activity).run{
             setCancelable(false)
             setTitle(getString(R.string.enable_geoData))
             setMessage(getString(R.string.pls_enable_geoData))
