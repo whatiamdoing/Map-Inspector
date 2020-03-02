@@ -55,7 +55,7 @@ class BottomDialogFragment : BottomSheetDialogFragment() {
 
     private fun setOnClickListeners() {
         btn_apply.setOnClickListener {
-            val placeName = ed_enter_name.text.toString()
+            val placeName = ed_enter_name.text.toString().trimIndent()
             val placeId = UUID.randomUUID().toString()
             dialogViewModel.createPlace(
                 sharedPref.getUserId()!!,
