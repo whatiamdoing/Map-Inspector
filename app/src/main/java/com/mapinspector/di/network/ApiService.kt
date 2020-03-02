@@ -9,6 +9,6 @@ import retrofit2.http.PUT
 import retrofit2.http.Path
 
 interface ApiService {
-    @PUT("places/{id}/{name}.json")
+    @PUT("users/{id}/{name}.json")
     fun createPlace(@Path("id") id: String, @Path("name") placeId: String, @Body yourPlace: Place): Observable<Response<ResponseBody>>
 }

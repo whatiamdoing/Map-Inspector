@@ -27,7 +27,7 @@ import com.mapinspector.utils.Constants.Delay.FASTEST_INTERVAL
 import com.mapinspector.utils.Constants.Delay.UPGRADE_INTERVAL
 import com.mapinspector.utils.Constants.Quantity.NUMBER_OF_UPGRADES
 
-private const val PERMISSION_REQUEST = 10
+private const val REQUEST_PERMISSIONS = 10
 
 class MapFragment : Fragment() {
 
@@ -57,6 +57,11 @@ class MapFragment : Fragment() {
         initMap()
     }
 
+    override fun onResume() {
+            zoomToMyLocation()
+            super.onResume()
+    }
+
     private fun initMap() {
         mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync {
@@ -65,12 +70,10 @@ class MapFragment : Fragment() {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 if (isPermissionsGranted()) {
                     googleMap.isMyLocationEnabled = true
-                    getLastLocation()
                 } else {
-                    showAlert()
+                    googleMap.isMyLocationEnabled = false
+                    showPermissionAlert()
                 }
-            } else {
-                requestPermissions(permissions, PERMISSION_REQUEST)
             }
         }
     }
@@ -83,27 +86,38 @@ class MapFragment : Fragment() {
     }
 
     private fun setOnMapClickListeners() {
-        googleMap.setOnMapClickListener {
-            googleMap.addMarker(MarkerOptions().position(it))
-        }
         googleMap.setOnMapLongClickListener {
             showBottomDialog(it)
         }
     }
 
-    private fun showAlert() {
-        AlertDialog.Builder(activity).apply {
+    private fun showPermissionAlert() {
+        AlertDialog.Builder(activity).run{
             setCancelable(false)
             setTitle(getString(R.string.need_permission))
             setMessage(getString(R.string.permission_need_for))
             setPositiveButton(getString(R.string.ok)) { _, _ ->
                 requestPermissions(
                     permissions,
-                    PERMISSION_REQUEST
+                    REQUEST_PERMISSIONS
                 )
             }
-            setNegativeButton(getString(R.string.cancel)) { _, _ -> showAlert() }
-        }.apply {
+            setNegativeButton(getString(R.string.cancel)) { _, _ -> showPermissionAlert() }
+            create()
+            show()
+        }
+    }
+
+    private fun showGpsAlert() {
+        val alertDialog = AlertDialog.Builder(activity)
+        alertDialog.run {
+            setCancelable(false)
+            setTitle(getString(R.string.enable_geoData))
+            setMessage(getString(R.string.pls_enable_geoData))
+            setPositiveButton(getString(R.string.yes)) { _, _ ->
+                startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS))
+            }
+            setNegativeButton(getString(R.string.no)) { _, _ -> showGpsAlert() }
             create()
             show()
         }
@@ -123,16 +137,11 @@ class MapFragment : Fragment() {
         grantResults: IntArray
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == PERMISSION_REQUEST) {
+        if (requestCode == REQUEST_PERMISSIONS) {
                 if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     googleMap.isMyLocationEnabled = true
-                    if (!isLocationEnabled()){
-                        gpsAlert()
-                    } else {
-                        getLastLocation()
-                    }
                 } else {
-                    requestPermissions(permissions, PERMISSION_REQUEST)
+                    requestPermissions(permissions, REQUEST_PERMISSIONS)
                 }
             }
     }
@@ -144,25 +153,11 @@ class MapFragment : Fragment() {
         )
     }
 
-    private fun gpsAlert(){
-        val alertDialog = AlertDialog.Builder(activity)
-        alertDialog.apply {
-            setCancelable(false)
-            setTitle(getString(R.string.enable_geoData))
-            setMessage(getString(R.string.pls_enable_geoData))
-            setPositiveButton(getString(R.string.yes)) { _, _ ->
-                startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS))
-            }
-            setNegativeButton(getString(R.string.no)) { _, _ -> gpsAlert() }
-        }.apply {
-            create()
-            show()
-        }
-    }
-
-    private fun getLastLocation() {
+    private  fun zoomToMyLocation(){
         if (isPermissionsGranted()) {
-            if (isLocationEnabled()) {
+            if (!isLocationEnabled()) {
+                showGpsAlert()
+            } else {
                 mFusedLocationClient.lastLocation.addOnCompleteListener(activity!!) { task ->
                     val location: Location? = task.result
                     if (location == null) {
@@ -171,12 +166,7 @@ class MapFragment : Fragment() {
                         googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(LatLng(location.latitude,location.longitude), 13f))
                     }
                 }
-            } else {
-                val intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
-                startActivity(intent)
             }
-        } else {
-            requestPermissions(permissions, PERMISSION_REQUEST)
         }
     }
 
