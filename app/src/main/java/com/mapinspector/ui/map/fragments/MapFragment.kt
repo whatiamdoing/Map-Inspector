@@ -107,7 +107,7 @@ class MapFragment : Fragment() {
     }
 
     private fun showGpsAlert() {
-            AlertDialog.Builder(activity).run{
+        AlertDialog.Builder(activity).run{
             setCancelable(false)
             setTitle(getString(R.string.enable_geoData))
             setMessage(getString(R.string.pls_enable_geoData))
@@ -150,7 +150,7 @@ class MapFragment : Fragment() {
         )
     }
 
-    private  fun zoomToMyLocation(){
+    private  fun zoomToMyLocation() {
         if (isPermissionsGranted()) {
             if (!isLocationEnabled()) {
                 showGpsAlert()

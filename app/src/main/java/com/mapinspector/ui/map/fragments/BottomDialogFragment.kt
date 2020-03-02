@@ -89,7 +89,7 @@ class BottomDialogFragment : BottomSheetDialogFragment() {
         })
     }
 
-    private fun setLoadingObserver(){
+    private fun setLoadingObserver() {
        dialogViewModel.isLoading.observe(this, androidx.lifecycle.Observer {
             it?.let{
                 if (it){
