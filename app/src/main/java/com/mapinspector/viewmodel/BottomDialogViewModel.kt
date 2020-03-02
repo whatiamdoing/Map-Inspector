@@ -1,5 +1,6 @@
 package com.mapinspector.viewmodel
 
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.mapinspector.di.App
 import com.mapinspector.di.network.ApiService
@@ -19,13 +20,18 @@ class BottomDialogViewModel: ViewModel() {
         App.appComponent.inject(this)
     }
     private val subscriptions = CompositeDisposable()
+    val errorLiveData = MutableLiveData<Throwable>()
+    val isLoading:  MutableLiveData<Boolean> = MutableLiveData()
 
     fun createPlace(id: String, placeName: String, placeCoordinates: Coordinates, placeId: String){
         subscriptions.add(
             apiService.createPlace(id, placeId, Place(placeName, placeCoordinates))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe()
+                .doOnSubscribe {isLoading.value = true}
+                .doOnTerminate {isLoading.value = false}
+                .subscribe({},
+                    {errorLiveData.value = it})
         )
     }
 }

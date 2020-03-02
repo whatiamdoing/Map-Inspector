@@ -4,14 +4,19 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.observe
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import com.google.android.material.snackbar.Snackbar
 import com.mapinspector.utils.SharedPreferences
 import com.mapinspector.di.App
 import com.mapinspector.R
 import com.mapinspector.model.Coordinates
 import com.mapinspector.model.LocationModel
+import com.mapinspector.utils.setGone
+import com.mapinspector.utils.setVisible
 import com.mapinspector.viewmodel.BottomDialogViewModel
 import kotlinx.android.synthetic.main.fragment_dialog.*
 import java.util.*
@@ -19,8 +24,10 @@ import javax.inject.Inject
 
 class BottomDialogFragment : BottomSheetDialogFragment() {
 
-    @Inject lateinit var dialogViewModel: BottomDialogViewModel
-    @Inject lateinit var sharedPref: SharedPreferences
+    @Inject
+    lateinit var dialogViewModel: BottomDialogViewModel
+    @Inject
+    lateinit var sharedPref: SharedPreferences
     private val coordinates by lazy { arguments!!.get("coordinates") as LocationModel }
 
     companion object {
@@ -47,10 +54,12 @@ class BottomDialogFragment : BottomSheetDialogFragment() {
         dialogViewModel = ViewModelProviders.of(this).get(BottomDialogViewModel::class.java)
         tv_object_cord.text = getString(
             R.string.latLng,
-            coordinates.latLng.latitude.toString(), 
+            coordinates.latLng.latitude.toString(),
             coordinates.latLng.longitude.toString()
         )
         setOnClickListeners()
+        observeSuccessMessage()
+        setLoadingObserver()
     }
 
     private fun setOnClickListeners() {
@@ -63,17 +72,35 @@ class BottomDialogFragment : BottomSheetDialogFragment() {
                 Coordinates(coordinates.latLng.latitude, coordinates.latLng.longitude),
                 placeId
             )
-            dismiss()
         }
         btn_back.setOnClickListener {
             dismiss()
         }
     }
 
-    private fun initUser(){
-        if (sharedPref.getIsFirstLaunch()){
+    private fun initUser() {
+        if (sharedPref.getIsFirstLaunch()) {
             sharedPref.setUserId(UUID.randomUUID().toString())
             sharedPref.setFirstLaunch(false)
         }
+    }
+
+    private fun observeSuccessMessage() {
+        dialogViewModel.errorLiveData.observe(this, androidx.lifecycle.Observer {
+            (Toast.makeText(activity!!, "Ошибка!", Toast.LENGTH_SHORT).show())
+        })
+    }
+
+    private fun setLoadingObserver(){
+       dialogViewModel.isLoading.observe(this, androidx.lifecycle.Observer {
+            it?.let{
+                if (it){
+                    pb_dialog.setVisible()
+                } else {
+                    pb_dialog.setGone()
+                    dismiss()
+                }
+            }
+       })
     }
 }
