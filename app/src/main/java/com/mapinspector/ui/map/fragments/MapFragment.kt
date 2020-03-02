@@ -23,7 +23,9 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.mapinspector.R
-import com.mapinspector.ui.map.fragments.BottomDialogFragment.Companion.newInstance
+import com.mapinspector.utils.Constants.Delay.FASTEST_INTERVAL
+import com.mapinspector.utils.Constants.Delay.UPGRADE_INTERVAL
+import com.mapinspector.utils.Constants.Quantity.NUMBER_OF_UPGRADES
 
 private const val PERMISSION_REQUEST = 10
 
@@ -61,7 +63,7 @@ class MapFragment : Fragment() {
             googleMap = it
             setOnMapClickListeners()
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                if (checkPermissions()) {
+                if (isPermissionsGranted()) {
                     googleMap.isMyLocationEnabled = true
                     getLastLocation()
                 } else {
@@ -73,11 +75,11 @@ class MapFragment : Fragment() {
         }
     }
 
-    private fun showBottomDialog(it: LatLng) {
-        allPoints.add(it)
+    private fun showBottomDialog(latLng: LatLng) {
+        allPoints.add(latLng)
         googleMap.clear()
-        googleMap.addMarker(MarkerOptions().position(it))
-        newInstance(it).show(childFragmentManager, null)
+        googleMap.addMarker(MarkerOptions().position(latLng))
+        BottomDialogFragment.newInstance(latLng).show(childFragmentManager, null)
     }
 
     private fun setOnMapClickListeners() {
@@ -107,11 +109,10 @@ class MapFragment : Fragment() {
         }
     }
 
-    private fun checkPermissions(): Boolean {
+    private fun isPermissionsGranted(): Boolean {
         if (ActivityCompat.checkSelfPermission(activity!!, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED &&
             ActivityCompat.checkSelfPermission(activity!!, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED){
             return true
-
         }
         return false
     }
@@ -135,6 +136,7 @@ class MapFragment : Fragment() {
                 }
             }
     }
+
     private fun isLocationEnabled(): Boolean {
         locationManager = context!!.getSystemService(Context.LOCATION_SERVICE) as LocationManager
         return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) || locationManager.isProviderEnabled(
@@ -159,7 +161,7 @@ class MapFragment : Fragment() {
     }
 
     private fun getLastLocation() {
-        if (checkPermissions()) {
+        if (isPermissionsGranted()) {
             if (isLocationEnabled()) {
                 mFusedLocationClient.lastLocation.addOnCompleteListener(activity!!) { task ->
                     val location: Location? = task.result
@@ -181,9 +183,9 @@ class MapFragment : Fragment() {
     private fun requestNewLocationData() {
         val mLocationRequest = LocationRequest().apply {
             priority = LocationRequest.PRIORITY_HIGH_ACCURACY
-            interval = 10000
-            fastestInterval = 5000
-            numUpdates = 1
+            interval = UPGRADE_INTERVAL
+            fastestInterval = FASTEST_INTERVAL
+            numUpdates = NUMBER_OF_UPGRADES
         }
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(activity!!)
         mFusedLocationClient.requestLocationUpdates(

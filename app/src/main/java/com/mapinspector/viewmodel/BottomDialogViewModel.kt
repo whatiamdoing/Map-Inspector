@@ -25,8 +25,6 @@ class BottomDialogViewModel: ViewModel() {
             apiService.createPlace(id, placeId, Place(placeName, placeCoordinates))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .doOnSubscribe {}
-                .doOnTerminate {}
                 .subscribe()
         )
     }
