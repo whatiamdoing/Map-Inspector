@@ -7,4 +7,12 @@
     <string name="apply">Apply</string>
     <string name="coordinates">coordinates</string>
     <string name="latLng">lat: %1$s \n lng: %2$s</string>
+    <string name="enable_geoData">Включить геоданные?</string>
+    <string name="pls_enable_geoData">Пожалуйста, включите геоданные, так будет лучше :)</string>
+    <string name="yes">Да</string>
+    <string name="no">Нет</string>
+    <string name="need_permission">Нужно разрешение</string>
+    <string name="permission_need_for">Разрешение необходимо для выполнения задачи.</string>
+    <string name="ok">OK</string>
+    <string name="cancel">Отмена</string>
 </resources>

@@ -1,4 +1,4 @@
-package com.mapinspector.entity
+package com.mapinspector.model
 
 data class Coordinates(
     val lat: Double,

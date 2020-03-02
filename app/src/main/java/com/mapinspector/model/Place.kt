@@ -1,4 +1,4 @@
-package com.mapinspector.entity
+package com.mapinspector.model
 
 data class Place(
     val placeName: String,
