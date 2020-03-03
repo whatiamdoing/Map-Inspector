@@ -6,6 +6,7 @@ object Constants {
         const val UPGRADE_INTERVAL = 10000L
         const val  FASTEST_INTERVAL = 5000L
         const val SPLASH_TIME_DELAY = 3000L
+        const val MAP_READY_DELAY = 1000L
     }
 
     object Api {
@@ -16,10 +17,13 @@ object Constants {
         const val PREF_KEY_USER = "user_places"
         const val PREF_KEY_USER_ID = "user_id"
         const val PREF_KEY_LAUNCH = "first_launch"
-        const val PREF_KEY_PERMISSION = "permission_granted"
     }
 
     object Quantity {
         const val NUMBER_OF_UPGRADES = 5
+    }
+
+    object Others {
+        const val MAP_NAME = "map"
     }
 }

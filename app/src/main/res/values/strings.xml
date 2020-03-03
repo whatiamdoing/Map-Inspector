@@ -15,4 +15,6 @@
     <string name="permission_need_for">Разрешение необходимо для выполнения задачи.</string>
     <string name="ok">OK</string>
     <string name="cancel">Отмена</string>
+    <string name="map">map</string>
+    <string name="list">list</string>
 </resources>
