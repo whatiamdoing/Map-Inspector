@@ -7,7 +7,6 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Location
 import android.location.LocationManager
-import android.os.Build
 import android.os.Bundle
 import android.os.Looper
 import android.provider.Settings
@@ -23,6 +22,7 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.mapinspector.R
+import com.mapinspector.ui.map.MapActivity
 import com.mapinspector.utils.Constants.Delay.FASTEST_INTERVAL
 import com.mapinspector.utils.Constants.Delay.UPGRADE_INTERVAL
 import com.mapinspector.utils.Constants.Quantity.NUMBER_OF_UPGRADES
@@ -37,10 +37,10 @@ class MapFragment : Fragment() {
     )
 
     private lateinit var mapFragment: SupportMapFragment
-    lateinit var mFusedLocationClient: FusedLocationProviderClient
+    private lateinit var mFusedLocationClient: FusedLocationProviderClient
     lateinit var googleMap: GoogleMap
     private val allPoints = mutableListOf<LatLng>()
-    lateinit var locationManager: LocationManager
+    private lateinit var locationManager: LocationManager
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -73,6 +73,7 @@ class MapFragment : Fragment() {
                     googleMap.isMyLocationEnabled = false
                     showPermissionAlert()
                 }
+            (activity!! as MapActivity).isMapReady()
         }
     }
 
