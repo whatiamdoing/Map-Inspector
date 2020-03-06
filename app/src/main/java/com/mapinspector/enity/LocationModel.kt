@@ -1,4 +1,4 @@
-package com.mapinspector.model
+package com.mapinspector.enity
 
 import android.os.Parcelable
 import com.google.android.gms.maps.model.LatLng

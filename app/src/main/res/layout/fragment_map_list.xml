@@ -2,14 +2,23 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/dialog_fragment"
     android:background="@color/white">
 
     <ProgressBar
-        android:id="@+id/pb_dialog"
+        android:id="@+id/pb_list"
         android:layout_centerInParent="true"
         android:visibility="gone"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/place_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_centerHorizontal="true"
+        tools:itemCount="2"
+        tools:listitem="@layout/item_place"/>
 
 </RelativeLayout>

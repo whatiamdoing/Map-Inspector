@@ -4,10 +4,27 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.mapinspector.R
+import com.mapinspector.base.BaseFragment
+import com.mapinspector.di.App
+import com.mapinspector.utils.SharedPreferences
+import com.mapinspector.utils.adapter.recycler.Adapter
+import com.mapinspector.utils.setGone
+import com.mapinspector.utils.setVisible
+import com.mapinspector.viewmodel.MapListViewModel
+import kotlinx.android.synthetic.main.fragment_map_list.*
+import javax.inject.Inject
 
-class MapListFragment : Fragment() {
+class MapListFragment : BaseFragment() {
+
+    @Inject
+    lateinit var mapListViewModel: MapListViewModel
+    @Inject
+    lateinit var sharedPref: SharedPreferences
+    private lateinit var adapter: Adapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -20,5 +37,47 @@ class MapListFragment : Fragment() {
         view: View,
         savedInstanceState: Bundle?
     ) {
+        App.appComponent.inject(this)
+        mapListViewModel = ViewModelProviders.of(this).get(MapListViewModel::class.java)
+        setLoadingObserver()
+        observeUnSuccessMessage()
+        initRecycler()
+        setPlaceListObserver()
+    }
+
+    override fun onResume() {
+        mapListViewModel.loadPlaces(sharedPref.getUserId()!!)
+        super.onResume()
+    }
+    private fun setLoadingObserver(){
+        mapListViewModel.isLoading.observe(this, Observer {
+            it?.let{
+                if (it){
+                    pb_list.setVisible()
+                } else {
+                    pb_list.setGone()
+                }
+            }
+        })
+    }
+
+    private fun observeUnSuccessMessage(){
+        mapListViewModel.errorLiveData.observe(this, androidx.lifecycle.Observer{
+            showMessage(getString(R.string.error))
+        })
+    }
+
+    private fun setPlaceListObserver() {
+        mapListViewModel.places.observe(this, Observer {
+            it?.let {
+                adapter.updateList(it)
+            }
+        })
+    }
+
+    private fun initRecycler(){
+        adapter = Adapter(arrayListOf())
+        place_list?.adapter = adapter
+        place_list?.layoutManager = LinearLayoutManager(activity!!)
     }
 }

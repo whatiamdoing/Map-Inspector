@@ -10,26 +10,33 @@ import android.location.LocationManager
 import android.os.Bundle
 import android.os.Looper
 import android.provider.Settings
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
 import com.google.android.gms.location.*
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 import com.mapinspector.R
-import com.mapinspector.ui.map.MapActivity
+import com.mapinspector.di.App
 import com.mapinspector.utils.Constants.Delay.FASTEST_INTERVAL
 import com.mapinspector.utils.Constants.Delay.UPGRADE_INTERVAL
 import com.mapinspector.utils.Constants.Quantity.NUMBER_OF_UPGRADES
+import com.mapinspector.utils.adapter.infoWindow.CustomInfoWindowAdapter
+import com.mapinspector.utils.SharedPreferences
+import com.mapinspector.viewmodel.MapListViewModel
+import javax.inject.Inject
 
 private const val REQUEST_PERMISSIONS = 10
-
-class MapFragment : Fragment() {
+class MapFragment : Fragment(), GoogleMap.OnMarkerClickListener, BottomDialogFragment.OnDismissListener, BottomDialogFragment.OnCompleteListener {
 
     private var permissions = arrayOf(
         Manifest.permission.ACCESS_FINE_LOCATION,
@@ -39,8 +46,13 @@ class MapFragment : Fragment() {
     private lateinit var mapFragment: SupportMapFragment
     private lateinit var mFusedLocationClient: FusedLocationProviderClient
     lateinit var googleMap: GoogleMap
-    private val allPoints = mutableListOf<LatLng>()
     private lateinit var locationManager: LocationManager
+    @Inject
+    lateinit var mapViewModel: MapListViewModel
+    @Inject
+    lateinit var sharedPref: SharedPreferences
+    lateinit var marker: Marker
+     var place: String? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -53,8 +65,10 @@ class MapFragment : Fragment() {
         view: View,
         savedInstanceState: Bundle?
     ) {
-        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(activity!!)
         initMap()
+        App.appComponent.inject(this)
+        mapViewModel = ViewModelProviders.of(this).get(MapListViewModel::class.java)
+        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(activity!!)
     }
 
     override fun onResume() {
@@ -73,14 +87,12 @@ class MapFragment : Fragment() {
                     googleMap.isMyLocationEnabled = false
                     showPermissionAlert()
                 }
-            (activity!! as MapActivity).isMapReady()
+            addExistingMarkets()
         }
     }
 
     private fun showBottomDialog(latLng: LatLng) {
-        allPoints.add(latLng)
-        googleMap.clear()
-        googleMap.addMarker(MarkerOptions().position(latLng))
+        marker =  googleMap.addMarker(MarkerOptions().position(latLng).title(place))
         BottomDialogFragment.newInstance(latLng).show(childFragmentManager, null)
     }
 
@@ -161,7 +173,12 @@ class MapFragment : Fragment() {
                     if (location == null) {
                         requestNewLocationData()
                     } else {
-                        googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(LatLng(location.latitude,location.longitude), 13f))
+                        googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(
+                            LatLng(
+                            location.latitude,
+                            location.longitude
+                        ), 13f)
+                        )
                     }
                 }
             }
@@ -188,4 +205,38 @@ class MapFragment : Fragment() {
             googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(LatLng(mLastLocation.latitude,mLastLocation.longitude), 13f))
         }
     }
+
+    private fun addExistingMarkets() {
+        mapViewModel.loadPlaces(sharedPref.getUserId()!!)
+        mapViewModel.places.observe(this, Observer { it ->
+            it.forEach {
+                googleMap.addMarker(
+                    MarkerOptions().position(
+                        LatLng(
+                            it.placeCoordinates.lat,
+                            it.placeCoordinates.lng
+                        )
+                    ).title(it.placeName)
+                )
+            }
+            googleMap.setInfoWindowAdapter(
+                CustomInfoWindowAdapter(activity!!)
+            )
+        })
+    }
+
+    override fun onMarkerClick(marker: Marker?): Boolean {
+        Log.d("M_MapFragment", "rere")
+        return true
+    }
+
+    override fun onDialogDismissed() {
+        marker.remove()
+    }
+
+    override fun onComplete(placeName: String) {
+        marker.title = placeName
+    }
 }
+
+
