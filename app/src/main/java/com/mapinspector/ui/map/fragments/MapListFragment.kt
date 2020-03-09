@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.mapinspector.R
 import com.mapinspector.base.BaseFragment
 import com.mapinspector.di.App
+import com.mapinspector.enity.PlaceDTO
 import com.mapinspector.utils.SharedPreferences
 import com.mapinspector.utils.adapter.recycler.Adapter
 import com.mapinspector.utils.setGone
@@ -18,6 +19,7 @@ import com.mapinspector.viewmodel.MapListViewModel
 import kotlinx.android.synthetic.main.fragment_map_list.*
 import javax.inject.Inject
 
+
 class MapListFragment : BaseFragment() {
 
     @Inject
@@ -25,6 +27,7 @@ class MapListFragment : BaseFragment() {
     @Inject
     lateinit var sharedPref: SharedPreferences
     private lateinit var adapter: Adapter
+    private lateinit var list: MutableList<PlaceDTO>
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -43,6 +46,12 @@ class MapListFragment : BaseFragment() {
         observeUnSuccessMessage()
         initRecycler()
         setPlaceListObserver()
+    }
+
+    fun removeItem(position: Int) {
+        list.removeAt(position)
+        adapter.swap(list, position)
+        
     }
 
     override fun onResume() {
@@ -69,8 +78,9 @@ class MapListFragment : BaseFragment() {
 
     private fun setPlaceListObserver() {
         mapListViewModel.places.observe(this, Observer {
+            list = it.toMutableList()
             it?.let {
-                adapter.updateList(it)
+                adapter.updateList(it.toMutableList())
             }
         })
     }
@@ -79,5 +89,10 @@ class MapListFragment : BaseFragment() {
         adapter = Adapter(arrayListOf())
         place_list?.adapter = adapter
         place_list?.layoutManager = LinearLayoutManager(activity!!)
+        adapter.setOnItemClickListener(object: Adapter.OnItemClickListener{
+            override fun onDeleteClick(position: Int) {
+                removeItem(position)
+            }
+        })
     }
 }
