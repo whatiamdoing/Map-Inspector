@@ -19,13 +19,14 @@ class MapListViewModel: ViewModel() {
         App.appComponent.inject(this)
     }
 
-    private val subscriptions = CompositeDisposable()
+    private val loadSubscriptions = CompositeDisposable()
+    private val deleteSubscriptions = CompositeDisposable()
     val isLoading: MutableLiveData<Boolean> = MutableLiveData()
     val errorLiveData = MutableLiveData<Throwable>()
     var places: MutableLiveData<List<PlaceDTO>> = MutableLiveData()
 
-    fun loadPlaces(userId: String){
-        subscriptions.add(
+    fun loadPlaces(userId: String) {
+        loadSubscriptions.add(
             apiService.getPlaces(userId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -33,6 +34,20 @@ class MapListViewModel: ViewModel() {
                 .doOnTerminate {isLoading.value = false}
                 .subscribe(
                     { onRetrievePlaceListSuccess(it) },
+                    { errorLiveData.value = it }
+                )
+        )
+    }
+
+    fun deletePlace(userId: String, placeId: String) {
+        deleteSubscriptions.add(
+            apiService.deletePlace(userId, placeId)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnSubscribe {isLoading.value = true }
+                .doOnTerminate {isLoading.value = false}
+                .subscribe(
+                    {  },
                     { errorLiveData.value = it }
                 )
         )
@@ -51,7 +66,8 @@ class MapListViewModel: ViewModel() {
     }
 
     override fun onCleared() {
-        subscriptions.dispose()
+        loadSubscriptions.dispose()
+        deleteSubscriptions.dispose()
         super.onCleared()
     }
 }

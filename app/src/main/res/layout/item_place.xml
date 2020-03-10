@@ -5,25 +5,13 @@
     android:layout_height="wrap_content"
     android:layout_marginTop="@dimen/spacing_normal_16">
 
-
-    <TextView
-        android:id="@+id/tv_number"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_marginStart="@dimen/spacing_huge_32"
-        android:text="@string/number"
-        android:textColor="@color/black"
-        android:textSize="25sp"
-        android:textStyle="bold" />
-
     <LinearLayout
         android:id="@+id/place_container"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:layout_toEndOf="@id/tv_number"
-        android:layout_marginStart="@dimen/spacing_normal_16">
+       android:layout_alignParentStart="true"
+        android:layout_marginStart="@dimen/spacing_huge_32">
 
         <TextView
             android:id="@+id/tv_placeName"
@@ -31,6 +19,7 @@
             android:layout_height="wrap_content"
             android:fontFamily="sans-serif"
             android:text="@string/place_name"
+
             android:textColor="@color/black"
             android:textSize="23sp"
             android:textStyle="bold"
@@ -49,7 +38,7 @@
 
     <ImageButton
         android:id="@+id/ib_delete"
-        android:src="@drawable/ic_delete_black_35dp"
+        android:src="@drawable/delete_btn_states"
         android:padding="@dimen/spacing_small_8"
         android:layout_alignParentEnd="true"
         android:layout_marginEnd="@dimen/spacing_normal_16"

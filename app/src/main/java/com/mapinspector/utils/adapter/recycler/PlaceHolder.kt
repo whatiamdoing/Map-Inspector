@@ -6,23 +6,18 @@ import com.mapinspector.R
 import com.mapinspector.enity.PlaceDTO
 import kotlinx.android.synthetic.main.item_place.view.*
 
-class PlaceHolder(itemView: View, private val listener: Adapter.OnItemClickListener?): RecyclerView.ViewHolder(itemView) {
+class PlaceHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
     fun bind(
-        data: Pair<Int, PlaceDTO>
+        data: PlaceDTO, onClickListener: (PlaceDTO) -> Unit
     ) {
-        itemView.tv_number.text = String.format(itemView.tv_number.resources.getString(R.string.number), data.first + 1)
-        itemView.tv_placeName.text = data.second.placeName
+        itemView.tv_placeName.text = data.placeName
         itemView.tv_coordinates.text = itemView.tv_coordinates.resources.getString(
             R.string.latLng,
-            data.second.placeCoordinates.lat.toString(),
-            data.second.placeCoordinates.lng.toString()
+            data.placeCoordinates.lat.toString(),
+            data.placeCoordinates.lng.toString()
         )
         itemView.ib_delete.setOnClickListener {
-            if (listener != null){
-                val position = adapterPosition
-                if (position != RecyclerView.NO_POSITION)
-                    listener.onDeleteClick(position)
-            }
+            onClickListener(data)
         }
     }
 }

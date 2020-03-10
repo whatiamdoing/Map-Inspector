@@ -13,10 +13,10 @@ class PlaceDiffCallback(
     override fun getNewListSize() = newList.size
 
     override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-        return oldList[oldItemPosition].placeName == newList[newItemPosition].placeName
+        return oldList[oldItemPosition].placeId == newList[newItemPosition].placeId
     }
 
     override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-        return oldList[oldItemPosition].placeCoordinates == newList[newItemPosition].placeCoordinates
+        return oldList[oldItemPosition].placeName == newList[newItemPosition].placeName
     }
 }
