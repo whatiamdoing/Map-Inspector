@@ -10,7 +10,6 @@ import android.location.LocationManager
 import android.os.Bundle
 import android.os.Looper
 import android.provider.Settings
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -22,9 +21,7 @@ import com.google.android.gms.location.*
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.SupportMapFragment
-import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.Marker
-import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.gms.maps.model.*
 import com.mapinspector.R
 import com.mapinspector.di.App
 import com.mapinspector.utils.Constants.Delay.FASTEST_INTERVAL
@@ -211,12 +208,15 @@ class MapFragment : Fragment(), GoogleMap.OnMarkerClickListener, BottomDialogFra
         mapViewModel.places.observe(this, Observer { it ->
             it.forEach {
                 googleMap.addMarker(
-                    MarkerOptions().position(
-                        LatLng(
-                            it.placeCoordinates.lat,
-                            it.placeCoordinates.lng
+                    MarkerOptions().apply{
+                        position(
+                            LatLng(
+                                it.placeCoordinates.lat,
+                                it.placeCoordinates.lng
+                            )
                         )
-                    ).title(it.placeName)
+                        title(it.placeName)
+                    }
                 )
             }
             googleMap.setInfoWindowAdapter(
@@ -226,7 +226,6 @@ class MapFragment : Fragment(), GoogleMap.OnMarkerClickListener, BottomDialogFra
     }
 
     override fun onMarkerClick(marker: Marker?): Boolean {
-        Log.d("M_MapFragment", "rere")
         return true
     }
 

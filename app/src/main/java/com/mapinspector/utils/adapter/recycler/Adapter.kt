@@ -21,7 +21,9 @@ class Adapter(
     override fun onBindViewHolder(holder: PlaceHolder, position: Int) {
         holder.bind(
             list[position]
-        ) { removeItem(it) }
+        ) {
+            removeItem(it)
+        }
     }
 
     private fun removeItem(place: PlaceDTO) {

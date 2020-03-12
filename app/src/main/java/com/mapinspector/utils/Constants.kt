@@ -22,8 +22,4 @@ object Constants {
     object Quantity {
         const val NUMBER_OF_UPGRADES = 5
     }
-
-    object Others {
-        const val MAP_NAME = "map"
-    }
 }

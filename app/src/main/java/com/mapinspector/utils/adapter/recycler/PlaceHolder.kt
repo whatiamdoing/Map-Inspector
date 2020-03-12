@@ -8,7 +8,8 @@ import kotlinx.android.synthetic.main.item_place.view.*
 
 class PlaceHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
     fun bind(
-        data: PlaceDTO, onClickListener: (PlaceDTO) -> Unit
+        data: PlaceDTO,
+        onClickListener: (PlaceDTO) -> Unit
     ) {
         itemView.tv_placeName.text = data.placeName
         itemView.tv_coordinates.text = itemView.tv_coordinates.resources.getString(

@@ -2,7 +2,6 @@ package com.mapinspector.di.network
 
 import com.mapinspector.enity.Place
 import io.reactivex.Observable
-import io.reactivex.internal.operators.observable.ObservableError
 import okhttp3.ResponseBody
 import retrofit2.Response
 import retrofit2.http.*
