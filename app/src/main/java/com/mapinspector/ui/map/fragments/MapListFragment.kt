@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -53,11 +54,7 @@ class MapListFragment : BaseFragment() {
     private fun setLoadingObserver(){
         mapListViewModel.isLoading.observe(this, Observer {
             it?.let{
-                if (it){
-                    pb_list.setVisible()
-                } else {
-                    pb_list.setGone()
-                }
+                pb_list.isVisible = it
             }
         })
     }
