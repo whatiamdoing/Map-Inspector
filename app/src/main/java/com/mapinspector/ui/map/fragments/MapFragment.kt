@@ -167,39 +167,16 @@ class MapFragment : Fragment(), GoogleMap.OnMarkerClickListener, BottomDialogFra
             } else {
                 mFusedLocationClient.lastLocation.addOnCompleteListener(activity!!) { task ->
                     val location: Location? = task.result
-                    if (location == null) {
-                        requestNewLocationData()
-                    } else {
+                    if (location != null) {
                         googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(
                             LatLng(
-                            location.latitude,
-                            location.longitude
-                        ), 13f)
+                                location.latitude,
+                                location.longitude
+                            ), 13f)
                         )
                     }
                 }
             }
-        }
-    }
-
-    private fun requestNewLocationData() {
-        val mLocationRequest = LocationRequest().apply {
-            priority = LocationRequest.PRIORITY_HIGH_ACCURACY
-            interval = UPGRADE_INTERVAL
-            fastestInterval = FASTEST_INTERVAL
-            numUpdates = NUMBER_OF_UPGRADES
-        }
-        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(activity!!)
-        mFusedLocationClient.requestLocationUpdates(
-            mLocationRequest, mLocationCallback,
-            Looper.myLooper()
-        )
-    }
-
-    private val mLocationCallback = object : LocationCallback() {
-        override fun onLocationResult(locationResult: LocationResult) {
-            val mLastLocation: Location = locationResult.lastLocation
-            googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(LatLng(mLastLocation.latitude,mLastLocation.longitude), 13f))
         }
     }
 

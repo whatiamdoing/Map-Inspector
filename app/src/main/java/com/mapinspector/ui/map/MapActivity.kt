@@ -18,9 +18,17 @@ import kotlinx.android.synthetic.main.activity_map.*
 
 class MapActivity : AppCompatActivity() {
 
-    private val mapTab by lazy { MapFragment() }
-    private val listTab by lazy { MapListFragment() }
-    private var current: Fragment? = null
+    companion object {
+        const val TAG_MAP = "map_fragment"
+        const val TAG_LIST = "list_fragment"
+    }
+
+    private var currentTab: TABS = TABS.MAP
+
+    enum class TABS(val fragment: Fragment, val tag: String) {
+        MAP(MapFragment(), TAG_MAP),
+        LIST(MapListFragment(), TAG_LIST)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,11 +37,7 @@ class MapActivity : AppCompatActivity() {
         bottom_navigation.setOnNavigationItemSelectedListener(navListener)
 
         Handler().postDelayed({
-            supportFragmentManager.beginTransaction().apply {
-                replace(R.id.fragment_map, MapFragment())
-                addToBackStack(null)
-                commit()
-            }
+            bottom_navigation.selectedItemId = R.id.nav_map
             Handler().postDelayed({
                     bottom_navigation.setVisible()
             }, MAP_READY_DELAY)
@@ -43,31 +47,38 @@ class MapActivity : AppCompatActivity() {
     private val navListener = BottomNavigationView.OnNavigationItemSelectedListener { menuItem ->
         when (menuItem.itemId) {
             R.id.nav_map -> {
-                current = mapTab
-                    supportFragmentManager.beginTransaction().run {
-                    replace(
-                        R.id.fragment_map,
-                        mapTab,
-                        MapListFragment().javaClass.simpleName
-                    )
-                        commit()
-                    return@OnNavigationItemSelectedListener true
-                }
+                selectTab(TABS.MAP)
             }
             R.id.nav_list -> {
-                current = listTab
-                supportFragmentManager.beginTransaction().run{
-                    replace(
-                        R.id.fragment_map,
-                        listTab,
-                        MapFragment().javaClass.simpleName
-                    )
-                        commit()
-                    return@OnNavigationItemSelectedListener true
-                }
+                selectTab(TABS.LIST)
             }
         }
-        false
+        true
+    }
+
+    private fun selectTab(tab: TABS) {
+        val currentFragment = supportFragmentManager
+            .findFragmentByTag(currentTab.tag)
+
+        val newFragment = supportFragmentManager
+            .findFragmentByTag(tab.tag)
+
+        if (currentFragment != null && newFragment != null && currentFragment == newFragment) return
+
+        supportFragmentManager.beginTransaction().apply {
+            if (newFragment == null) add(
+                R.id.fragment_map,
+                tab.fragment,
+                tab.tag
+            )
+            currentFragment?.let {
+                hide(it)
+            }
+            newFragment?.let {
+                show(it)
+            }
+        }.commitNow()
+        currentTab = tab
     }
 
     fun showMessage(messageText: String) {
