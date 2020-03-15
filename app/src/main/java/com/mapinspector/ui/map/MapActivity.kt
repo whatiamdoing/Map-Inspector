@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.snackbar.Snackbar
 import com.mapinspector.R
+import com.mapinspector.enity.PlaceDTO
 import com.mapinspector.ui.map.fragments.MapFragment
 import com.mapinspector.ui.map.fragments.MapListFragment
 import com.mapinspector.utils.Constants.Delay.MAP_READY_DELAY
@@ -85,5 +86,10 @@ class MapActivity : AppCompatActivity() {
         findViewById<View>(android.R.id.content)?.let {
             Snackbar.make(it, messageText, Snackbar.LENGTH_SHORT).show()
         } ?: Toast.makeText(this, messageText, Toast.LENGTH_SHORT).show()
+    }
+
+    fun selectMarker(place: PlaceDTO) {
+        selectTab(TABS.MAP)
+        (supportFragmentManager.findFragmentByTag(TAG_MAP) as MapFragment).showPlace(place)
     }
 }

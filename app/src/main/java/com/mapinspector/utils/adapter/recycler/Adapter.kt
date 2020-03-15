@@ -8,7 +8,9 @@ import com.mapinspector.R
 import com.mapinspector.enity.PlaceDTO
 
 class Adapter(
-    private var list: List<PlaceDTO>, private val onClickListener:(PlaceDTO) -> Unit
+    private var list: List<PlaceDTO>,
+    private val onDeleteClickListener:(PlaceDTO) -> Unit,
+    private val onItemClickListener:(PlaceDTO) -> Unit
 ) : RecyclerView.Adapter<PlaceHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PlaceHolder {
@@ -20,14 +22,16 @@ class Adapter(
 
     override fun onBindViewHolder(holder: PlaceHolder, position: Int) {
         holder.bind(
-            list[position]
-        ) {
-            removeItem(it)
-        }
+            list[position],
+            {
+                removeItem(it)
+            },
+            onItemClickListener
+        )
     }
 
     private fun removeItem(place: PlaceDTO) {
-        onClickListener(place)
+        onDeleteClickListener(place)
         val newList = this.list.filter { it.placeId != place.placeId }
         val diffCallback = PlaceDiffCallback(this.list, newList)
         val diffResult = DiffUtil.calculateDiff(diffCallback)

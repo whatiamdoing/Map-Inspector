@@ -18,7 +18,6 @@ class CustomInfoWindowAdapter(val context: Context): GoogleMap.InfoWindowAdapter
             marker.position.longitude.toString()
         )
         view.tv_infoWindow_placeName.text = marker.title
-
         return view
     }
 

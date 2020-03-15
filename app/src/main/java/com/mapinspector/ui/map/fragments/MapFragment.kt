@@ -8,7 +8,6 @@ import android.content.pm.PackageManager
 import android.location.Location
 import android.location.LocationManager
 import android.os.Bundle
-import android.os.Looper
 import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
@@ -24,9 +23,7 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.*
 import com.mapinspector.R
 import com.mapinspector.di.App
-import com.mapinspector.utils.Constants.Delay.FASTEST_INTERVAL
-import com.mapinspector.utils.Constants.Delay.UPGRADE_INTERVAL
-import com.mapinspector.utils.Constants.Quantity.NUMBER_OF_UPGRADES
+import com.mapinspector.enity.PlaceDTO
 import com.mapinspector.utils.adapter.infoWindow.CustomInfoWindowAdapter
 import com.mapinspector.utils.SharedPreferences
 import com.mapinspector.viewmodel.MapListViewModel
@@ -49,7 +46,7 @@ class MapFragment : Fragment(), GoogleMap.OnMarkerClickListener, BottomDialogFra
     @Inject
     lateinit var sharedPref: SharedPreferences
     lateinit var marker: Marker
-     var place: String? = null
+    lateinit var selectMarker: Marker
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -69,8 +66,8 @@ class MapFragment : Fragment(), GoogleMap.OnMarkerClickListener, BottomDialogFra
     }
 
     override fun onResume() {
-            zoomToMyLocation()
-            super.onResume()
+        zoomToMyLocation()
+        super.onResume()
     }
 
     private fun initMap() {
@@ -89,7 +86,7 @@ class MapFragment : Fragment(), GoogleMap.OnMarkerClickListener, BottomDialogFra
     }
 
     private fun showBottomDialog(latLng: LatLng) {
-        marker =  googleMap.addMarker(MarkerOptions().position(latLng).title(place))
+        marker =  googleMap.addMarker(MarkerOptions().position(latLng))
         BottomDialogFragment.newInstance(latLng).show(childFragmentManager, null)
     }
 
@@ -212,6 +209,30 @@ class MapFragment : Fragment(), GoogleMap.OnMarkerClickListener, BottomDialogFra
 
     override fun onComplete(placeName: String) {
         marker.title = placeName
+    }
+
+    fun showPlace(place: PlaceDTO){
+        googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(
+            LatLng(
+                place.placeCoordinates.lat,
+                place.placeCoordinates.lng
+            ),
+            13f)
+        )
+        selectMarker =  googleMap.addMarker(MarkerOptions().position(
+            LatLng(
+                place.placeCoordinates.lat,
+                place.placeCoordinates.lng
+            )
+        ))
+        selectMarker.title = place.placeName
+        selectMarker.showInfoWindow()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        selectMarker.hideInfoWindow()
+        selectMarker.remove()
     }
 }
 

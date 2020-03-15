@@ -11,14 +11,12 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.mapinspector.R
 import com.mapinspector.base.BaseFragment
 import com.mapinspector.di.App
+import com.mapinspector.ui.map.MapActivity
 import com.mapinspector.utils.SharedPreferences
 import com.mapinspector.utils.adapter.recycler.Adapter
-import com.mapinspector.utils.setGone
-import com.mapinspector.utils.setVisible
 import com.mapinspector.viewmodel.MapListViewModel
 import kotlinx.android.synthetic.main.fragment_map_list.*
 import javax.inject.Inject
-
 
 class MapListFragment : BaseFragment() {
 
@@ -74,9 +72,13 @@ class MapListFragment : BaseFragment() {
     }
 
     private fun initRecycler(){
-        adapter = Adapter(arrayListOf()) {
+        adapter = Adapter(arrayListOf(),
+            {
             mapListViewModel.deletePlace(sharedPref.getUserId()!!,it.placeId)
-        }
+        },
+            {
+                (activity!! as MapActivity).selectMarker(it)
+        })
         place_list?.adapter = adapter
         place_list?.layoutManager = LinearLayoutManager(activity!!)
     }
