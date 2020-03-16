@@ -92,4 +92,13 @@ class MapActivity : AppCompatActivity() {
         selectTab(TABS.MAP)
         (supportFragmentManager.findFragmentByTag(TAG_MAP) as MapFragment).showPlace(place)
     }
+
+    fun removeMarker(place: PlaceDTO){
+        val markers = (supportFragmentManager.findFragmentByTag(TAG_MAP) as MapFragment).markers
+        markers.forEach {
+            when(it.title){
+                place.placeName -> it.remove()
+            }
+        }
+    }
 }

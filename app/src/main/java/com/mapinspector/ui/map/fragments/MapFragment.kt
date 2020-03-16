@@ -24,6 +24,7 @@ import com.google.android.gms.maps.model.*
 import com.mapinspector.R
 import com.mapinspector.di.App
 import com.mapinspector.enity.PlaceDTO
+import com.mapinspector.utils.Constants.Others.ZOOM_TO_CURRENT_LOCATION
 import com.mapinspector.utils.adapter.infoWindow.CustomInfoWindowAdapter
 import com.mapinspector.utils.SharedPreferences
 import com.mapinspector.viewmodel.MapListViewModel
@@ -47,6 +48,7 @@ class MapFragment : Fragment(), GoogleMap.OnMarkerClickListener, BottomDialogFra
     lateinit var sharedPref: SharedPreferences
     lateinit var marker: Marker
     lateinit var selectMarker: Marker
+    val markers: MutableList<Marker> = ArrayList()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -169,7 +171,7 @@ class MapFragment : Fragment(), GoogleMap.OnMarkerClickListener, BottomDialogFra
                             LatLng(
                                 location.latitude,
                                 location.longitude
-                            ), 13f)
+                            ), ZOOM_TO_CURRENT_LOCATION)
                         )
                     }
                 }
@@ -181,7 +183,7 @@ class MapFragment : Fragment(), GoogleMap.OnMarkerClickListener, BottomDialogFra
         mapViewModel.loadPlaces(sharedPref.getUserId()!!)
         mapViewModel.places.observe(this, Observer { it ->
             it.forEach {
-                googleMap.addMarker(
+                marker = googleMap.addMarker(
                     MarkerOptions().apply{
                         position(
                             LatLng(
@@ -192,6 +194,7 @@ class MapFragment : Fragment(), GoogleMap.OnMarkerClickListener, BottomDialogFra
                         title(it.placeName)
                     }
                 )
+                markers += marker
             }
             googleMap.setInfoWindowAdapter(
                 CustomInfoWindowAdapter(activity!!)

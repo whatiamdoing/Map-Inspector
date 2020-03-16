@@ -75,6 +75,7 @@ class MapListFragment : BaseFragment() {
         adapter = Adapter(arrayListOf(),
             {
             mapListViewModel.deletePlace(sharedPref.getUserId()!!,it.placeId)
+                (activity!! as MapActivity).removeMarker(it)
         },
             {
                 (activity!! as MapActivity).selectMarker(it)
