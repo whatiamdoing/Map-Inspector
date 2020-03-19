@@ -40,7 +40,6 @@ class MapListFragment : BaseFragment() {
         App.appComponent.inject(this)
         mapListViewModel = ViewModelProviders.of(this).get(MapListViewModel::class.java)
         setLoadingObserver()
-        observeUnSuccessMessage()
         setPlaceListObserver()
         initRecycler()
     }
@@ -54,12 +53,6 @@ class MapListFragment : BaseFragment() {
             it?.let{
                 pb_list.isVisible = it
             }
-        })
-    }
-
-    private fun observeUnSuccessMessage(){
-        mapListViewModel.errorLiveData.observe(this, androidx.lifecycle.Observer{
-            showMessage(getString(R.string.error))
         })
     }
 

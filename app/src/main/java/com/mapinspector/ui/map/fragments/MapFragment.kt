@@ -179,7 +179,8 @@ class MapFragment : Fragment(), GoogleMap.OnMarkerClickListener, BottomDialogFra
         }
     }
 
-    private fun addExistingMarkets() {
+     fun addExistingMarkets() {
+        googleMap.clear()
         mapViewModel.loadPlaces(sharedPref.getUserId()!!)
         mapViewModel.places.observe(this, Observer { it ->
             it.forEach {

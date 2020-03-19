@@ -52,6 +52,8 @@ class MapActivity : AppCompatActivity() {
             }
             R.id.nav_list -> {
                 selectTab(TABS.LIST)
+                supportFragmentManager.beginTransaction().detach(TABS.LIST.fragment).commitNow()
+                supportFragmentManager.beginTransaction().attach(TABS.LIST.fragment).commitNow()
             }
         }
         true
@@ -100,5 +102,6 @@ class MapActivity : AppCompatActivity() {
                 place.placeName -> it.remove()
             }
         }
+        (supportFragmentManager.findFragmentByTag(TAG_MAP) as MapFragment).addExistingMarkets()
     }
 }

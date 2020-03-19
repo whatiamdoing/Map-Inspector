@@ -2,10 +2,13 @@ package com.mapinspector.viewmodel
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.google.android.gms.common.SignInButton
 import com.mapinspector.di.App
 import com.mapinspector.di.network.ApiService
 import com.mapinspector.enity.Place
 import com.mapinspector.enity.PlaceDTO
+import com.mapinspector.utils.SingleLiveEvent
+import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
@@ -22,8 +25,7 @@ class MapListViewModel: ViewModel() {
     private val loadSubscriptions = CompositeDisposable()
     private val deleteSubscriptions = CompositeDisposable()
     val isLoading: MutableLiveData<Boolean> = MutableLiveData()
-    val errorLiveData = MutableLiveData<Throwable>()
-    var places: MutableLiveData<List<PlaceDTO>> = MutableLiveData()
+    var places: SingleLiveEvent<List<PlaceDTO>> = SingleLiveEvent()
 
     fun loadPlaces(userId: String) {
         loadSubscriptions.add(
@@ -34,7 +36,7 @@ class MapListViewModel: ViewModel() {
                 .doOnTerminate {isLoading.value = false}
                 .subscribe(
                     { onRetrievePlaceListSuccess(it) },
-                    { errorLiveData.value = it }
+                    { }
                 )
         )
     }
@@ -46,10 +48,7 @@ class MapListViewModel: ViewModel() {
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnSubscribe {isLoading.value = true }
                 .doOnTerminate {isLoading.value = false}
-                .subscribe(
-                    {  },
-                    { errorLiveData.value = it }
-                )
+                .subscribe()
         )
     }
 
@@ -68,6 +67,7 @@ class MapListViewModel: ViewModel() {
     override fun onCleared() {
         loadSubscriptions.dispose()
         deleteSubscriptions.dispose()
+        places.value = null
         super.onCleared()
     }
 }
