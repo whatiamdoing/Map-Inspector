@@ -16,6 +16,7 @@ import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import com.faltenreich.skeletonlayout.Skeleton
 import com.google.android.gms.location.*
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -29,6 +30,7 @@ import com.mapinspector.utils.Constants.Others.ZOOM_TO_SELECT_PLACE
 import com.mapinspector.utils.adapter.infoWindow.CustomInfoWindowAdapter
 import com.mapinspector.utils.SharedPreferences
 import com.mapinspector.viewmodel.MapListViewModel
+import kotlinx.android.synthetic.main.fragment_map.*
 import javax.inject.Inject
 
 private const val REQUEST_PERMISSIONS = 10
@@ -50,6 +52,7 @@ class MapFragment : Fragment(), GoogleMap.OnMarkerClickListener, BottomDialogFra
     lateinit var marker: Marker
     lateinit var selectMarker: Marker
     val markers: MutableList<Marker> = ArrayList()
+   private lateinit var skeleton: Skeleton
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -62,6 +65,8 @@ class MapFragment : Fragment(), GoogleMap.OnMarkerClickListener, BottomDialogFra
         view: View,
         savedInstanceState: Bundle?
     ) {
+        skeleton = skeleton_layout
+        skeleton.showSkeleton()
         initMap()
         App.appComponent.inject(this)
         mapViewModel = ViewModelProviders.of(this).get(MapListViewModel::class.java)
@@ -166,6 +171,7 @@ class MapFragment : Fragment(), GoogleMap.OnMarkerClickListener, BottomDialogFra
                 showGpsAlert()
             } else {
                 mFusedLocationClient.lastLocation.addOnCompleteListener(activity!!) { task ->
+                    skeleton.showOriginal()
                     val location: Location? = task.result
                     if (location != null) {
                         googleMap.animateCamera(
