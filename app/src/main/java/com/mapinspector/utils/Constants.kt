@@ -19,5 +19,6 @@ object Constants {
 
     object Others {
         const val ZOOM_TO_CURRENT_LOCATION = 14f
+        const val ZOOM_TO_SELECT_PLACE = 13f
     }
 }

@@ -92,6 +92,7 @@ class MapActivity : AppCompatActivity() {
 
     fun selectMarker(place: PlaceDTO) {
         selectTab(TABS.MAP)
+        bottom_navigation.selectedItemId = R.id.nav_map
         (supportFragmentManager.findFragmentByTag(TAG_MAP) as MapFragment).showPlace(place)
     }
 

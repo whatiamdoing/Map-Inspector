@@ -41,16 +41,19 @@ class MapListFragment : BaseFragment() {
         mapListViewModel = ViewModelProviders.of(this).get(MapListViewModel::class.java)
         setLoadingObserver()
         setPlaceListObserver()
+        observeUnSuccessMessage()
         initRecycler()
     }
 
     override fun onResume() {
-        mapListViewModel.loadPlaces(sharedPref.getUserId()!!)
+        sharedPref.getUserId()?.let {
+            mapListViewModel.loadPlaces(it)
+        }
         super.onResume()
     }
     private fun setLoadingObserver(){
         mapListViewModel.isLoading.observe(this, Observer {
-            it?.let{
+            it?.let {
                 pb_list.isVisible = it
             }
         })
@@ -64,15 +67,22 @@ class MapListFragment : BaseFragment() {
         })
     }
 
+    private fun observeUnSuccessMessage(){
+        mapListViewModel.errorLiveEvent.observe(this, Observer {
+            (activity!! as MapActivity).showMessage(getString(R.string.error))
+        })
+    }
+
     private fun initRecycler(){
         adapter = Adapter(arrayListOf(),
             {
-            mapListViewModel.deletePlace(sharedPref.getUserId()!!,it.placeId)
+                mapListViewModel.deletePlace(sharedPref.getUserId()!!,it.placeId)
                 (activity!! as MapActivity).removeMarker(it)
-        },
+            },
             {
                 (activity!! as MapActivity).selectMarker(it)
-        })
+            }
+        )
         place_list?.adapter = adapter
         place_list?.layoutManager = LinearLayoutManager(activity!!)
     }

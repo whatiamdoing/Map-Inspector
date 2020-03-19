@@ -25,6 +25,7 @@ import com.mapinspector.R
 import com.mapinspector.di.App
 import com.mapinspector.enity.PlaceDTO
 import com.mapinspector.utils.Constants.Others.ZOOM_TO_CURRENT_LOCATION
+import com.mapinspector.utils.Constants.Others.ZOOM_TO_SELECT_PLACE
 import com.mapinspector.utils.adapter.infoWindow.CustomInfoWindowAdapter
 import com.mapinspector.utils.SharedPreferences
 import com.mapinspector.viewmodel.MapListViewModel
@@ -167,7 +168,8 @@ class MapFragment : Fragment(), GoogleMap.OnMarkerClickListener, BottomDialogFra
                 mFusedLocationClient.lastLocation.addOnCompleteListener(activity!!) { task ->
                     val location: Location? = task.result
                     if (location != null) {
-                        googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(
+                        googleMap.animateCamera(
+                            CameraUpdateFactory.newLatLngZoom(
                             LatLng(
                                 location.latitude,
                                 location.longitude
@@ -181,7 +183,9 @@ class MapFragment : Fragment(), GoogleMap.OnMarkerClickListener, BottomDialogFra
 
      fun addExistingMarkets() {
         googleMap.clear()
-        mapViewModel.loadPlaces(sharedPref.getUserId()!!)
+         sharedPref.getUserId()?.let{
+             mapViewModel.loadPlaces(it)
+         }
         mapViewModel.places.observe(this, Observer { it ->
             it.forEach {
                 marker = googleMap.addMarker(
@@ -221,7 +225,7 @@ class MapFragment : Fragment(), GoogleMap.OnMarkerClickListener, BottomDialogFra
                 place.placeCoordinates.lat,
                 place.placeCoordinates.lng
             ),
-            13f)
+            ZOOM_TO_SELECT_PLACE)
         )
         selectMarker =  googleMap.addMarker(MarkerOptions().position(
             LatLng(

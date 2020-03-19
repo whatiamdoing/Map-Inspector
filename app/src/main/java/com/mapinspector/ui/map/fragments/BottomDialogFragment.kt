@@ -28,7 +28,7 @@ class BottomDialogFragment : BaseBottomSheetDialogFragment() {
     @Inject
     lateinit var sharedPref: SharedPreferences
     private val coordinates by lazy { arguments!!.get("coordinates") as LocationModel }
-    var isMarkerCanceled = true
+    private var isMarkerCanceled = true
 
     companion object {
         fun newInstance(coordinates: LatLng) = BottomDialogFragment().apply {
@@ -76,13 +76,15 @@ class BottomDialogFragment : BaseBottomSheetDialogFragment() {
             isMarkerCanceled = false
             val placeName = ed_enter_name.text.toString().trimIndent()
             val placeId = UUID.randomUUID().toString()
-            dialogViewModel.createPlace(
-                sharedPref.getUserId()!!,
-                placeName,
-                Coordinates(coordinates.latLng.latitude, coordinates.latLng.longitude),
-                placeId
-            )
-            placeListener!!.onComplete(placeName)
+            sharedPref.getUserId()?.let {
+                dialogViewModel.createPlace(
+                    it,
+                    placeName,
+                    Coordinates(coordinates.latLng.latitude, coordinates.latLng.longitude),
+                    placeId
+                )
+            }
+            placeListener?.onComplete(placeName)
         }
         btn_back.setOnClickListener {
             isMarkerCanceled = true
