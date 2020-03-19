@@ -12,7 +12,7 @@
         android:padding="@dimen/spacing_normal_16"
         android:layout_below="@id/btn_back"
         android:hint="@string/enter_name"
-        android:maxLength="14"
+        android:maxLength="20"
         android:gravity="center"
         android:cursorVisible="false"
         android:singleLine="true"

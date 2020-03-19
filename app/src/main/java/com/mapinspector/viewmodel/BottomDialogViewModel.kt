@@ -4,8 +4,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.mapinspector.di.App
 import com.mapinspector.di.network.ApiService
-import com.mapinspector.model.Coordinates
-import com.mapinspector.model.Place
+import com.mapinspector.enity.Coordinates
+import com.mapinspector.enity.Place
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers

@@ -8,28 +8,31 @@ import android.content.pm.PackageManager
 import android.location.Location
 import android.location.LocationManager
 import android.os.Bundle
-import android.os.Looper
 import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
 import com.google.android.gms.location.*
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.SupportMapFragment
-import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.gms.maps.model.*
 import com.mapinspector.R
-import com.mapinspector.ui.map.MapActivity
-import com.mapinspector.utils.Constants.Delay.FASTEST_INTERVAL
-import com.mapinspector.utils.Constants.Delay.UPGRADE_INTERVAL
-import com.mapinspector.utils.Constants.Quantity.NUMBER_OF_UPGRADES
+import com.mapinspector.di.App
+import com.mapinspector.enity.PlaceDTO
+import com.mapinspector.utils.Constants.Others.ZOOM_TO_CURRENT_LOCATION
+import com.mapinspector.utils.Constants.Others.ZOOM_TO_SELECT_PLACE
+import com.mapinspector.utils.adapter.infoWindow.CustomInfoWindowAdapter
+import com.mapinspector.utils.SharedPreferences
+import com.mapinspector.viewmodel.MapListViewModel
+import javax.inject.Inject
 
 private const val REQUEST_PERMISSIONS = 10
-
-class MapFragment : Fragment() {
+class MapFragment : Fragment(), GoogleMap.OnMarkerClickListener, BottomDialogFragment.OnDismissListener, BottomDialogFragment.OnCompleteListener {
 
     private var permissions = arrayOf(
         Manifest.permission.ACCESS_FINE_LOCATION,
@@ -39,8 +42,14 @@ class MapFragment : Fragment() {
     private lateinit var mapFragment: SupportMapFragment
     private lateinit var mFusedLocationClient: FusedLocationProviderClient
     lateinit var googleMap: GoogleMap
-    private val allPoints = mutableListOf<LatLng>()
     private lateinit var locationManager: LocationManager
+    @Inject
+    lateinit var mapViewModel: MapListViewModel
+    @Inject
+    lateinit var sharedPref: SharedPreferences
+    lateinit var marker: Marker
+    lateinit var selectMarker: Marker
+    val markers: MutableList<Marker> = ArrayList()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -53,13 +62,15 @@ class MapFragment : Fragment() {
         view: View,
         savedInstanceState: Bundle?
     ) {
-        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(activity!!)
         initMap()
+        App.appComponent.inject(this)
+        mapViewModel = ViewModelProviders.of(this).get(MapListViewModel::class.java)
+        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(activity!!)
     }
 
     override fun onResume() {
-            zoomToMyLocation()
-            super.onResume()
+        zoomToMyLocation()
+        super.onResume()
     }
 
     private fun initMap() {
@@ -73,14 +84,12 @@ class MapFragment : Fragment() {
                     googleMap.isMyLocationEnabled = false
                     showPermissionAlert()
                 }
-            (activity!! as MapActivity).isMapReady()
+            addExistingMarkets()
         }
     }
 
     private fun showBottomDialog(latLng: LatLng) {
-        allPoints.add(latLng)
-        googleMap.clear()
-        googleMap.addMarker(MarkerOptions().position(latLng))
+        marker =  googleMap.addMarker(MarkerOptions().position(latLng))
         BottomDialogFragment.newInstance(latLng).show(childFragmentManager, null)
     }
 
@@ -158,34 +167,81 @@ class MapFragment : Fragment() {
             } else {
                 mFusedLocationClient.lastLocation.addOnCompleteListener(activity!!) { task ->
                     val location: Location? = task.result
-                    if (location == null) {
-                        requestNewLocationData()
-                    } else {
-                        googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(LatLng(location.latitude,location.longitude), 13f))
+                    if (location != null) {
+                        googleMap.animateCamera(
+                            CameraUpdateFactory.newLatLngZoom(
+                            LatLng(
+                                location.latitude,
+                                location.longitude
+                            ), ZOOM_TO_CURRENT_LOCATION)
+                        )
                     }
                 }
             }
         }
     }
 
-    private fun requestNewLocationData() {
-        val mLocationRequest = LocationRequest().apply {
-            priority = LocationRequest.PRIORITY_HIGH_ACCURACY
-            interval = UPGRADE_INTERVAL
-            fastestInterval = FASTEST_INTERVAL
-            numUpdates = NUMBER_OF_UPGRADES
-        }
-        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(activity!!)
-        mFusedLocationClient.requestLocationUpdates(
-            mLocationRequest, mLocationCallback,
-            Looper.myLooper()
-        )
+     fun addExistingMarkets() {
+        googleMap.clear()
+         sharedPref.getUserId()?.let{
+             mapViewModel.loadPlaces(it)
+         }
+        mapViewModel.places.observe(this, Observer { it ->
+            it.forEach {
+                marker = googleMap.addMarker(
+                    MarkerOptions().apply{
+                        position(
+                            LatLng(
+                                it.placeCoordinates.lat,
+                                it.placeCoordinates.lng
+                            )
+                        )
+                        title(it.placeName)
+                    }
+                )
+                markers += marker
+            }
+            googleMap.setInfoWindowAdapter(
+                CustomInfoWindowAdapter(activity!!)
+            )
+        })
     }
 
-    private val mLocationCallback = object : LocationCallback() {
-        override fun onLocationResult(locationResult: LocationResult) {
-            val mLastLocation: Location = locationResult.lastLocation
-            googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(LatLng(mLastLocation.latitude,mLastLocation.longitude), 13f))
-        }
+    override fun onMarkerClick(marker: Marker?): Boolean {
+        return true
+    }
+
+    override fun onDialogDismissed() {
+        marker.remove()
+    }
+
+    override fun onComplete(placeName: String) {
+        marker.title = placeName
+    }
+
+    fun showPlace(place: PlaceDTO){
+        googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(
+            LatLng(
+                place.placeCoordinates.lat,
+                place.placeCoordinates.lng
+            ),
+            ZOOM_TO_SELECT_PLACE)
+        )
+        selectMarker =  googleMap.addMarker(MarkerOptions().position(
+            LatLng(
+                place.placeCoordinates.lat,
+                place.placeCoordinates.lng
+            )
+        ))
+        selectMarker.title = place.placeName
+        selectMarker.showInfoWindow()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        selectMarker.hideInfoWindow()
+        selectMarker.remove()
     }
 }
+
+

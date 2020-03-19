@@ -3,8 +3,6 @@ package com.mapinspector.utils
 object Constants {
 
     object Delay {
-        const val UPGRADE_INTERVAL = 10000L
-        const val  FASTEST_INTERVAL = 5000L
         const val SPLASH_TIME_DELAY = 3000L
         const val MAP_READY_DELAY = 1000L
     }
@@ -19,11 +17,8 @@ object Constants {
         const val PREF_KEY_LAUNCH = "first_launch"
     }
 
-    object Quantity {
-        const val NUMBER_OF_UPGRADES = 5
-    }
-
     object Others {
-        const val MAP_NAME = "map"
+        const val ZOOM_TO_CURRENT_LOCATION = 14f
+        const val ZOOM_TO_SELECT_PLACE = 13f
     }
 }

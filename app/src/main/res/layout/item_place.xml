@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/spacing_normal_16">
+
+    <LinearLayout
+        android:id="@+id/place_container"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+       android:layout_alignParentStart="true"
+        android:layout_marginStart="@dimen/spacing_huge_32">
+
+        <TextView
+            android:id="@+id/tv_placeName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif"
+            android:text="@string/place_name"
+
+            android:textColor="@color/black"
+            android:textSize="23sp"
+            android:textStyle="bold"
+            android:typeface="normal" />
+
+        <TextView
+            android:id="@+id/tv_coordinates"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_small_8"
+            android:text="@string/coordinates"
+            android:textSize="15sp"
+            android:textStyle="italic" />
+
+    </LinearLayout>
+
+    <ImageButton
+        android:id="@+id/ib_delete"
+        android:src="@drawable/delete_btn_states"
+        android:padding="@dimen/spacing_small_8"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="@dimen/spacing_normal_16"
+        android:background="@android:color/transparent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+</RelativeLayout>

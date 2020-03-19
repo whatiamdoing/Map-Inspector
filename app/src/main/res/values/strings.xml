@@ -1,12 +1,10 @@
 <resources>
     <string name="app_name">Map Inspector</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="enter_name">Введите название</string>
     <string name="apply">Apply</string>
     <string name="coordinates">coordinates</string>
-    <string name="latLng">lat: %1$s \n lng: %2$s</string>
+    <string name="latLng">lat: %1$s \nlng: %2$s</string>
     <string name="enable_geoData">Включить геоданные?</string>
     <string name="pls_enable_geoData">Пожалуйста, включите геоданные, так будет лучше :)</string>
     <string name="yes">Да</string>
@@ -17,4 +15,7 @@
     <string name="cancel">Отмена</string>
     <string name="map">map</string>
     <string name="list">list</string>
+    <string name="error">Ошибка!</string>
+    <string name="marker_canceled">marker canceled</string>
+    <string name="place_name">Place name</string>
 </resources>
