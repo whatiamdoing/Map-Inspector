@@ -69,7 +69,6 @@ class MapListViewModel: ViewModel() {
     override fun onCleared() {
         loadSubscriptions.dispose()
         deleteSubscriptions.dispose()
-        places.call()
         super.onCleared()
     }
 }
