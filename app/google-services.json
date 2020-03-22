@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "104379370286",
+    "firebase_url": "https://map-inspector-070400.firebaseio.com",
+    "project_id": "map-inspector-070400",
+    "storage_bucket": "map-inspector-070400.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:104379370286:android:70e9185c8d5c952815c8bf",
+        "android_client_info": {
+          "package_name": "com.mapinspector"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "104379370286-chpfnrt4e5nl4er9kh3dfh055t1ker6q.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.mapinspector",
+            "certificate_hash": "ca22e11ae139844380b8b02601e14144c4936e93"
+          }
+        },
+        {
+          "client_id": "104379370286-mrjvhnnk014cpgium2l0ig02p5g31tb9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCMQRT4v3KkIlnupeNRl1rWMCK6lidcQ_I"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "104379370286-mrjvhnnk014cpgium2l0ig02p5g31tb9.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
