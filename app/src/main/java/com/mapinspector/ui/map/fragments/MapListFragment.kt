@@ -5,11 +5,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.mapinspector.R
-import com.mapinspector.base.BaseFragment
 import com.mapinspector.di.App
 import com.mapinspector.ui.map.MapActivity
 import com.mapinspector.utils.SharedPreferences
@@ -18,7 +18,7 @@ import com.mapinspector.viewmodel.MapListViewModel
 import kotlinx.android.synthetic.main.fragment_map_list.*
 import javax.inject.Inject
 
-class MapListFragment : BaseFragment() {
+class MapListFragment : Fragment() {
 
     @Inject
     lateinit var mapListViewModel: MapListViewModel
