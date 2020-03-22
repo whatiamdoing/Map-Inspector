@@ -11,7 +11,7 @@ import com.google.android.gms.maps.model.LatLng
 import com.mapinspector.utils.SharedPreferences
 import com.mapinspector.di.App
 import com.mapinspector.R
-import com.mapinspector.base.BaseBottomSheetDialogFragment
+import com.mapinspector.base.BaseBDF
 import com.mapinspector.enity.Coordinates
 import com.mapinspector.enity.LocationModel
 import com.mapinspector.utils.setGone
@@ -21,7 +21,7 @@ import kotlinx.android.synthetic.main.fragment_dialog.*
 import java.util.*
 import javax.inject.Inject
 
-class BottomDialogFragment : BaseBottomSheetDialogFragment() {
+class BottomDialogFragment : BaseBDF() {
 
     @Inject
     lateinit var dialogViewModel: BottomDialogViewModel
