@@ -43,15 +43,17 @@ class MapListFragment : Fragment() {
         setPlaceListObserver()
         observeUnSuccessMessage()
         initRecycler()
-    }
-
-    override fun onResume() {
         sharedPref.getUserId()?.let {
             mapListViewModel.loadPlaces(it)
         }
+    }
+
+    override fun onResume() {
+        mapListViewModel.getPlaces()
         super.onResume()
     }
-    private fun setLoadingObserver(){
+
+    private fun setLoadingObserver() {
         mapListViewModel.isLoading.observe(this, Observer {
             it?.let {
                 pb_list.isVisible = it
