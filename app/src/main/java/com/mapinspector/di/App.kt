@@ -1,10 +1,7 @@
 package com.mapinspector.di
 
 import android.app.Application
-import com.mapinspector.di.module.ContextModule
-import com.mapinspector.di.module.ViewModelModule
-import com.mapinspector.di.module.NetworkModule
-import com.mapinspector.di.module.SharedPreferencesModule
+import com.mapinspector.di.module.*
 
 class App: Application() {
 
@@ -23,6 +20,8 @@ class App: Application() {
             viewModelModule(ViewModelModule)
             sharedPreferencesModule(SharedPreferencesModule)
             contextModule(ContextModule(applicationContext))
+            applicationModule(ApplicationModule(this@App))
+            roomModule(RoomModule)
         }.build()
     }
 }

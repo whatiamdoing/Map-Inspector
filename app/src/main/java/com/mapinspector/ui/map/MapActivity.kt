@@ -9,7 +9,7 @@ import androidx.fragment.app.Fragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.snackbar.Snackbar
 import com.mapinspector.R
-import com.mapinspector.enity.PlaceDTO
+import com.mapinspector.db.enity.PlaceDTO
 import com.mapinspector.ui.map.fragments.MapFragment
 import com.mapinspector.ui.map.fragments.MapListFragment
 import com.mapinspector.utils.Constants.Delay.MAP_READY_DELAY

@@ -24,7 +24,7 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.*
 import com.mapinspector.R
 import com.mapinspector.di.App
-import com.mapinspector.enity.PlaceDTO
+import com.mapinspector.db.enity.PlaceDTO
 import com.mapinspector.utils.Constants.Others.ZOOM_TO_CURRENT_LOCATION
 import com.mapinspector.utils.Constants.Others.ZOOM_TO_SELECT_PLACE
 import com.mapinspector.utils.adapter.infoWindow.CustomInfoWindowAdapter

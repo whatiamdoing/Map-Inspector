@@ -4,8 +4,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.mapinspector.di.App
 import com.mapinspector.di.network.ApiService
-import com.mapinspector.enity.Place
-import com.mapinspector.enity.PlaceDTO
+import com.mapinspector.db.enity.Place
+import com.mapinspector.db.enity.PlaceDTO
 import com.mapinspector.utils.SingleLiveEvent
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable

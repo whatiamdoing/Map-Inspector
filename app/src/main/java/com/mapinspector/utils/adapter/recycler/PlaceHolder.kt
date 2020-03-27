@@ -3,7 +3,7 @@ package com.mapinspector.utils.adapter.recycler
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.mapinspector.R
-import com.mapinspector.enity.PlaceDTO
+import com.mapinspector.db.enity.PlaceDTO
 import kotlinx.android.synthetic.main.item_place.view.*
 
 class PlaceHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
