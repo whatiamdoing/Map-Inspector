@@ -26,6 +26,8 @@ class MapActivity : AppCompatActivity() {
 
     private var currentTab: TABS = TABS.MAP
 
+    private var isFirstTimeOpened = true
+
     enum class TABS(val fragment: Fragment, val tag: String) {
         MAP(MapFragment(), TAG_MAP),
         LIST(MapListFragment(), TAG_LIST)
@@ -52,8 +54,11 @@ class MapActivity : AppCompatActivity() {
             }
             R.id.nav_list -> {
                 selectTab(TABS.LIST)
-                supportFragmentManager.beginTransaction().detach(TABS.LIST.fragment).commitNow()
-                supportFragmentManager.beginTransaction().attach(TABS.LIST.fragment).commitNow()
+                if (!isFirstTimeOpened) {
+                    supportFragmentManager.beginTransaction().detach(TABS.LIST.fragment).commitNow()
+                    supportFragmentManager.beginTransaction().attach(TABS.LIST.fragment).commitNow()
+                }
+                isFirstTimeOpened = false
             }
         }
         true

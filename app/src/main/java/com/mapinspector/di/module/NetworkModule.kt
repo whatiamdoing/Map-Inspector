@@ -17,13 +17,13 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    internal fun provideApiService(retrofit: Retrofit): ApiService {
+    fun provideApiService(retrofit: Retrofit): ApiService {
         return retrofit.create(ApiService::class.java)
     }
 
     @Provides
     @Singleton
-    internal fun provideRetrofit(): Retrofit {
+    fun provideRetrofit(): Retrofit {
         val loginInterceptor = HttpLoggingInterceptor()
         loginInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY)
         val okHttpClient = OkHttpClient.Builder()

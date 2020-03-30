@@ -1,6 +1,7 @@
 package com.mapinspector.ui.map.fragments
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -25,6 +26,7 @@ class MapListFragment : Fragment() {
     @Inject
     lateinit var sharedPref: SharedPreferences
     private lateinit var adapter: Adapter
+    private var isFirstTimeOpened = true
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -43,14 +45,14 @@ class MapListFragment : Fragment() {
         setPlaceListObserver()
         observeUnSuccessMessage()
         initRecycler()
-        sharedPref.getUserId()?.let {
-            mapListViewModel.loadPlaces(it)
+        if(isFirstTimeOpened) {
+            sharedPref.getUserId()?.let {
+                mapListViewModel.loadPlaces(it)
+            }
+            isFirstTimeOpened = false
+        } else {
+            mapListViewModel.getPlaces()
         }
-    }
-
-    override fun onResume() {
-        mapListViewModel.getPlaces()
-        super.onResume()
     }
 
     private fun setLoadingObserver() {

@@ -1,5 +1,6 @@
 package com.mapinspector.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.mapinspector.db.PlaceDAO
@@ -17,9 +18,12 @@ import javax.inject.Inject
 
 class MapListViewModel: ViewModel() {
 
-    @Inject lateinit var apiService: ApiService
-    @Inject lateinit var placeDAO: PlaceDAO
-    @Inject lateinit var sharedPref: SharedPreferences
+    @Inject
+    lateinit var apiService: ApiService
+    @Inject
+    lateinit var placeDAO: PlaceDAO
+    @Inject
+    lateinit var sharedPref: SharedPreferences
 
     init{
         App.appComponent.inject(this)
@@ -42,11 +46,21 @@ class MapListViewModel: ViewModel() {
         placeDAO.getAllPlaces()
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
-            .toObservable()
-            .onErrorResumeNext(Observable.empty())
+            .doOnNext {
+                Log.d("M_MapListViewModel", it.toString())
+                places.value = it}
+            .map {
+                Log.d("M_MapListViewModel", it.toString())
+                it
+            }
+            .doOnError {
+                Log.d("M_MapListViewModel",
+                    it.toString())}
+
 
     private fun getPlacesFromApi() =
         apiService.getPlaces(sharedPref.getUserId()!!)
+            .onErrorResumeNext(Observable.empty())
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .map { it ->
@@ -55,9 +69,13 @@ class MapListViewModel: ViewModel() {
                     it.key,
                     it.value.placeName,
                     it.value.placeCoordinates
-                )
-            }}
-            .doOnNext {placeDAO.insertAll(it)}
+                ) }
+            }
+            .doOnNext {
+                placeDAO.insertAll(it)
+                places.value = it
+            }
+
 
     fun loadPlaces(userId: String) {
         loadSubscriptions.add(

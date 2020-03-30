@@ -3,7 +3,7 @@ package com.mapinspector.db.enity
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
-@Entity(tableName = "placeDTO")
+@Entity
 data class PlaceDTO(
     @PrimaryKey
     val placeId: String,
