@@ -1,7 +1,6 @@
 package com.mapinspector.ui.map.fragments
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -45,9 +44,13 @@ class MapListFragment : Fragment() {
         setPlaceListObserver()
         observeUnSuccessMessage()
         initRecycler()
+        getPlacesFromDaoOrApi()
+    }
+
+    private fun getPlacesFromDaoOrApi() {
         if(isFirstTimeOpened) {
             sharedPref.getUserId()?.let {
-                mapListViewModel.loadPlaces(it)
+                mapListViewModel.getPlacesFromApi(it)
             }
             isFirstTimeOpened = false
         } else {

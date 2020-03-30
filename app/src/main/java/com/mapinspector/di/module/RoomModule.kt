@@ -4,13 +4,12 @@ import android.content.Context
 import androidx.room.Room
 import com.mapinspector.db.PlaceDAO
 import com.mapinspector.db.PlaceDatabase
+import com.mapinspector.utils.Constants.Others.DB_NAME
 import dagger.Module
 import dagger.Provides
 
 @Module
 object RoomModule {
-
-    private const val DB_NAME = "place.db"
 
     @Volatile
     private var instance: PlaceDatabase? = null

@@ -20,7 +20,6 @@ class App: Application() {
             viewModelModule(ViewModelModule)
             sharedPreferencesModule(SharedPreferencesModule)
             contextModule(ContextModule(applicationContext))
-            applicationModule(ApplicationModule(this@App))
             roomModule(RoomModule)
         }.build()
     }

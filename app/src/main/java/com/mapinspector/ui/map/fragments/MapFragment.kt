@@ -190,7 +190,7 @@ class MapFragment : Fragment(), GoogleMap.OnMarkerClickListener, BottomDialogFra
      fun addExistingMarkets() {
         googleMap.clear()
          sharedPref.getUserId()?.let{
-             mapViewModel.loadPlaces(it)
+             mapViewModel.getPlacesFromApi(it)
          }
         mapViewModel.places.observe(this, Observer { it ->
             it.forEach {

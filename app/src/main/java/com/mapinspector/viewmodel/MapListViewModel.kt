@@ -1,12 +1,10 @@
 package com.mapinspector.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.mapinspector.db.PlaceDAO
 import com.mapinspector.di.App
 import com.mapinspector.di.network.ApiService
-import com.mapinspector.db.enity.Place
 import com.mapinspector.db.enity.PlaceDTO
 import com.mapinspector.utils.SharedPreferences
 import com.mapinspector.utils.SingleLiveEvent
@@ -25,69 +23,61 @@ class MapListViewModel: ViewModel() {
     @Inject
     lateinit var sharedPref: SharedPreferences
 
-    init{
+    init {
         App.appComponent.inject(this)
     }
 
     private val loadSubscriptions = CompositeDisposable()
     private val deleteSubscriptions = CompositeDisposable()
+    private val roomSubscriptions = CompositeDisposable()
     val isLoading: MutableLiveData<Boolean> = MutableLiveData()
     val errorLiveEvent: MutableLiveData<Throwable> = MutableLiveData()
     var places: SingleLiveEvent<List<PlaceDTO>> = SingleLiveEvent()
 
-
-    fun getPlaces() =
-        Observable.concat(
-            getPlacesFromDao().skipWhile {it.isEmpty()},
-            getPlacesFromApi()
+    fun getPlaces() {
+        roomSubscriptions.add(
+            Observable.concat(
+                getPlacesFromDao().skipWhile { it.isEmpty()},
+                Observable.fromArray(getPlacesFromApi(sharedPref.getUserId()!!))
+            ).run {
+                subscribeOn(Schedulers.io())
+                observeOn(AndroidSchedulers.mainThread())
+                subscribe()
+            }
         )
+    }
 
     private fun getPlacesFromDao() =
-        placeDAO.getAllPlaces()
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .doOnNext {
-                Log.d("M_MapListViewModel", it.toString())
-                places.value = it}
-            .map {
-                Log.d("M_MapListViewModel", it.toString())
-                it
-            }
-            .doOnError {
-                Log.d("M_MapListViewModel",
-                    it.toString())}
-
-
-    private fun getPlacesFromApi() =
-        apiService.getPlaces(sharedPref.getUserId()!!)
-            .onErrorResumeNext(Observable.empty())
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .map { it ->
-                it.map {
-                PlaceDTO(
-                    it.key,
-                    it.value.placeName,
-                    it.value.placeCoordinates
-                ) }
-            }
-            .doOnNext {
-                placeDAO.insertAll(it)
+        placeDAO.getAllPlaces().run {
+            subscribeOn(Schedulers.io())
+            observeOn(AndroidSchedulers.mainThread())
+            doOnNext {
                 places.value = it
             }
+        }
 
 
-    fun loadPlaces(userId: String) {
+    fun getPlacesFromApi(userId: String) {
         loadSubscriptions.add(
             apiService.getPlaces(userId)
+                .onErrorResumeNext(Observable.empty())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnSubscribe {isLoading.value = true }
                 .doOnTerminate {isLoading.value = false}
-                .subscribe(
-                    { onRetrievePlaceListSuccess(it) },
-                    {}
-                )
+                .map { it ->
+                    it.map {
+                        PlaceDTO(
+                            it.key,
+                            it.value.placeName,
+                            it.value.placeCoordinates
+                        ) }.sortedBy { it.placeName }
+                }
+                .doOnNext {
+                    places.value = it
+                    placeDAO.insertAll(it)
+                }
+                .subscribe()
         )
     }
 
@@ -103,18 +93,6 @@ class MapListViewModel: ViewModel() {
                     {errorLiveEvent.value = it}
                 )
         )
-    }
-
-    private fun onRetrievePlaceListSuccess(it: Map<String, Place>): List<PlaceDTO> {
-        val placeList = it.map {
-            PlaceDTO(
-                it.key,
-                it.value.placeName,
-                it.value.placeCoordinates
-            )
-        }.sortedBy { it.placeName }
-        places.value = placeList
-        return placeList
     }
 
     override fun onCleared() {

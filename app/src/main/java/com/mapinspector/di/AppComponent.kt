@@ -10,7 +10,7 @@ import com.mapinspector.viewmodel.MapListViewModel
 import dagger.Component
 import javax.inject.Singleton
 
-@Component(modules = [NetworkModule::class, ViewModelModule::class, SharedPreferencesModule::class, ContextModule::class, RoomModule::class, ApplicationModule::class])
+@Component(modules = [NetworkModule::class, ViewModelModule::class, SharedPreferencesModule::class, ContextModule::class, RoomModule::class])
 @Singleton interface AppComponent {
 
     fun inject(fragment: MapFragment)
