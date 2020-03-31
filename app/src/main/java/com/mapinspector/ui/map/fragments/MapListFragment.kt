@@ -83,7 +83,7 @@ class MapListFragment : Fragment() {
     private fun initRecycler(){
         adapter = Adapter(arrayListOf(),
             {
-                mapListViewModel.deletePlace(sharedPref.getUserId()!!,it.placeId)
+                mapListViewModel.deletePlace(sharedPref.getUserId()!!, it)
                 (activity!! as MapActivity).removeMarker(it)
             },
             {

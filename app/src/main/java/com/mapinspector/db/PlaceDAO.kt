@@ -14,4 +14,7 @@ interface PlaceDAO {
     @Query("SELECT * from PlaceDTO")
     fun getAllPlaces(): Observable<List<PlaceDTO>>
 
+    @Delete
+    fun deletePlace(place: PlaceDTO)
+
 }

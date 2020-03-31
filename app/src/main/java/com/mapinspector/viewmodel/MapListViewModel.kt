@@ -1,6 +1,6 @@
 package com.mapinspector.viewmodel
 
-import androidx.lifecycle.MutableLiveData
+    import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.mapinspector.db.PlaceDAO
 import com.mapinspector.di.App
@@ -52,7 +52,7 @@ class MapListViewModel: ViewModel() {
             subscribeOn(Schedulers.io())
             observeOn(AndroidSchedulers.mainThread())
             doOnNext {
-                places.value = it
+                places.postValue(it)
             }
         }
 
@@ -81,15 +81,15 @@ class MapListViewModel: ViewModel() {
         )
     }
 
-    fun deletePlace(userId: String, placeId: String) {
+    fun deletePlace(userId: String, place: PlaceDTO) {
         deleteSubscriptions.add(
-            apiService.deletePlace(userId, placeId)
+            apiService.deletePlace(userId, place.placeId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnSubscribe {isLoading.value = true }
                 .doOnTerminate {isLoading.value = false}
                 .subscribe(
-                    {},
+                    {placeDAO.deletePlace(place)},
                     {errorLiveEvent.value = it}
                 )
         )
