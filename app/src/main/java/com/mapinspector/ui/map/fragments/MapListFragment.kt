@@ -90,7 +90,7 @@ class MapListFragment : Fragment() {
                 (activity!! as MapActivity).selectMarker(it)
             }
         )
-        place_list?.adapter = adapter
-        place_list?.layoutManager = LinearLayoutManager(activity!!)
+        place_list.adapter = adapter
+        place_list.layoutManager = LinearLayoutManager(activity!!)
     }
 }
