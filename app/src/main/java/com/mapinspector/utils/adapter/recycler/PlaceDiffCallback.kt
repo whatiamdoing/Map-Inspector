@@ -1,7 +1,7 @@
 package com.mapinspector.utils.adapter.recycler
 
 import androidx.recyclerview.widget.DiffUtil
-import com.mapinspector.enity.PlaceDTO
+import com.mapinspector.db.enity.PlaceDTO
 
 class PlaceDiffCallback(
     private val oldList: List<PlaceDTO>,

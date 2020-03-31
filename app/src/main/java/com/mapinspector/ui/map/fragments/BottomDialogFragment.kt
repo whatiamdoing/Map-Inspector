@@ -12,8 +12,8 @@ import com.mapinspector.utils.SharedPreferences
 import com.mapinspector.di.App
 import com.mapinspector.R
 import com.mapinspector.base.BaseBDF
-import com.mapinspector.enity.Coordinates
-import com.mapinspector.enity.LocationModel
+import com.mapinspector.db.enity.Coordinates
+import com.mapinspector.db.enity.LocationModel
 import com.mapinspector.utils.setGone
 import com.mapinspector.utils.setVisible
 import com.mapinspector.viewmodel.BottomDialogViewModel

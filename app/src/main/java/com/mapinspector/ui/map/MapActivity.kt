@@ -9,7 +9,7 @@ import androidx.fragment.app.Fragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.snackbar.Snackbar
 import com.mapinspector.R
-import com.mapinspector.enity.PlaceDTO
+import com.mapinspector.db.enity.PlaceDTO
 import com.mapinspector.ui.map.fragments.MapFragment
 import com.mapinspector.ui.map.fragments.MapListFragment
 import com.mapinspector.utils.Constants.Delay.MAP_READY_DELAY
@@ -25,6 +25,8 @@ class MapActivity : AppCompatActivity() {
     }
 
     private var currentTab: TABS = TABS.MAP
+
+    private var isFirstTimeOpened = true
 
     enum class TABS(val fragment: Fragment, val tag: String) {
         MAP(MapFragment(), TAG_MAP),
@@ -52,8 +54,11 @@ class MapActivity : AppCompatActivity() {
             }
             R.id.nav_list -> {
                 selectTab(TABS.LIST)
-                supportFragmentManager.beginTransaction().detach(TABS.LIST.fragment).commitNow()
-                supportFragmentManager.beginTransaction().attach(TABS.LIST.fragment).commitNow()
+                if (!isFirstTimeOpened) {
+                    supportFragmentManager.beginTransaction().detach(TABS.LIST.fragment).commitNow()
+                    supportFragmentManager.beginTransaction().attach(TABS.LIST.fragment).commitNow()
+                }
+                isFirstTimeOpened = false
             }
         }
         true

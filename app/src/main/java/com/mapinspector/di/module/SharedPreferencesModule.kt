@@ -8,8 +8,10 @@ import javax.inject.Singleton
 
 @Module
 object SharedPreferencesModule {
+
     @Provides
     @Singleton
     fun provideSharedPreferences(context: Context) =
         context.getSharedPreferences(PREF_KEY_USER, Context.MODE_PRIVATE)!!
+
 }

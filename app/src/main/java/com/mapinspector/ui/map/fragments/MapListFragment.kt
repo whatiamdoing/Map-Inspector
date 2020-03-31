@@ -25,6 +25,7 @@ class MapListFragment : Fragment() {
     @Inject
     lateinit var sharedPref: SharedPreferences
     private lateinit var adapter: Adapter
+    private var isFirstTimeOpened = true
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -43,15 +44,21 @@ class MapListFragment : Fragment() {
         setPlaceListObserver()
         observeUnSuccessMessage()
         initRecycler()
+        getPlacesFromDaoOrApi()
     }
 
-    override fun onResume() {
-        sharedPref.getUserId()?.let {
-            mapListViewModel.loadPlaces(it)
+    private fun getPlacesFromDaoOrApi() {
+        if(isFirstTimeOpened) {
+            sharedPref.getUserId()?.let {
+                mapListViewModel.getPlacesFromApi(it)
+            }
+            isFirstTimeOpened = false
+        } else {
+            mapListViewModel.getPlaces()
         }
-        super.onResume()
     }
-    private fun setLoadingObserver(){
+
+    private fun setLoadingObserver() {
         mapListViewModel.isLoading.observe(this, Observer {
             it?.let {
                 pb_list.isVisible = it
@@ -76,7 +83,7 @@ class MapListFragment : Fragment() {
     private fun initRecycler(){
         adapter = Adapter(arrayListOf(),
             {
-                mapListViewModel.deletePlace(sharedPref.getUserId()!!,it.placeId)
+                mapListViewModel.deletePlace(sharedPref.getUserId()!!, it)
                 (activity!! as MapActivity).removeMarker(it)
             },
             {

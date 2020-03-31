@@ -1,6 +1,6 @@
 package com.mapinspector.di.network
 
-import com.mapinspector.enity.Place
+import com.mapinspector.db.enity.Place
 import io.reactivex.Observable
 import okhttp3.ResponseBody
 import retrofit2.Response
