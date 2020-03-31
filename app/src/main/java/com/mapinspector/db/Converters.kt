@@ -10,10 +10,10 @@ class Converters {
     private val gson = Gson()
 
     @TypeConverter
-    fun coordinatesToString(placeCoordinates: Coordinates): String = gson.toJson(placeCoordinates)
+    fun coordinatesToJson(placeCoordinates: Coordinates): String = gson.toJson(placeCoordinates)
 
     @TypeConverter
-    fun stringToCoordinates(jsonData: String?) =
+    fun coordinatesFromJson(jsonData: String?) =
         try {
             gson.fromJson(jsonData, Coordinates::class.java)
         } catch (e: Exception) {
